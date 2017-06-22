@@ -1,5 +1,9 @@
 package Menu;
 
+import AVL.AVL;
+import Arbre23.Arbre;
+import Tree23.Arbre23;
+
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -80,56 +84,55 @@ public class Gestor {
      *
      */
     private static void gestioPrimera(){
-       /* StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
         Scanner     sc = new Scanner(System.in);    // Variable scanner
         String taula, columna, tipus;
         int estructura;
+        boolean status = true;
 
         do {
             System.out.print("\nEnter a name for the table: ");
             taula = sc.nextLine();
-
-            if (tableAlreadyDefined(taula)) {
+            //status = tableAlreadyDefined(taula);
+            if (!status) {
                 System.out.print("Error, table ");
                 System.out.print(taula);
                 System.out.println(" already exists,");
             }
-        } while (tableAlreadyDefined(taula));
+        } while (!status);
 
         do {
             System.out.println("Select a data structure for the table:");
             System.out.print(" 1. ");
-            System.out.println(Arbre23.getNameOfStructure());
-            System.out.print(" 2.");
-            System.out.println(ArbreB.getNameOfStructure());
-                try {
-                    estructura = sc.nextInt();
-                } catch (java.util.InputMismatchException e) {
-                    System.err.println("Error, opcio no vàlida");
-                    estructura = -1;
-                    System.out.println("");
+            System.out.println(AVL.getName());
+            System.out.print(" 2. ");
+            System.out.println(Arbre.getName());
+            try {
+                estructura = sc.nextInt();
+            } catch (java.util.InputMismatchException e) {
+                System.err.println("Error, opcio no vàlida");
+                estructura = -1;
+                System.out.println("");
 
-                }
-            } while (estructura <= 1 || 2 >= estructura);
+            }
+        } while (estructura < 1 || 2 < estructura);
 
 
         do {
-            sb.setLength(0);
             System.out.print("Enter a column name for the new table ");
             System.out.print(taula);
             System.out.println(":");
             columna = sc.nextLine();
-            if (columnAlreadyDefined(taula, columna)) {
-                sb.setLength(0);
+            //status = columnAlreadyDefined(taula, columna);
+            if (!status) {
                 System.out.print("Error, column ");
                 System.out.print(columna);
                 System.out.println(" already exists,");
             }
-        } while (columnAlreadyDefined(taula, columna));
-        sb.setLength(0);
+        } while (!status);
+
         System.out.println("Which kind of data stores this column?");
         tipus = sc.nextLine();
-*/
 
     }
 
@@ -161,7 +164,7 @@ public class Gestor {
     }
 
     /**
-     * Gestiona la primera opció
+     * Gestiona la primera opció del submenu de create table
      *
      */
     private static void gestioPrimeraMenu2(){
@@ -170,7 +173,7 @@ public class Gestor {
     }
 
     /**
-     * Gestiona la segona opció
+     * Gestiona la segona opció del submenu de create table
      */
     private static void gestioSegonaMenu2(){
         Menu m;
@@ -183,42 +186,42 @@ public class Gestor {
     }
 
     /**
-     * Gestiona la tercera opció
+     * Gestiona la tercera opció del submenu de create table
      */
     private static void gestioTerceraMenu2(){
 
     }
 
     /**
-     * Gestiona la tercera opció
+     * Gestiona la tercera opció del submenu de create table
      */
     private static void gestioCuartaMenu2(){
 
     }
 
     /**
-     * Gestiona la Cinquena opció
+     * Gestiona la Cinquena opció del submenu de create table
      */
     private static void gestioCinquenaMenu2(){
 
     }
 
     /**
-     * Gestiona la Sisena opció
+     * Gestiona la Sisena opció del submenu de create table
      */
     private static void gestioSisenaMenu2(){
 
     }
 
     /**
-     * Gestiona la setena opció
+     * Gestiona la setena opció del submenu de create table
      */
     private static void gestioSetenaMenu2(){
 
     }
 
     /**
-     * Gestiona la vuitena opció
+     * Gestiona la vuitena opció del submenu de create table
      */
     private static void gestioVuitenaMenu2(){
 

@@ -1,4 +1,4 @@
-package AVL;
+package Arbre23;
 
 import DBMSi.TableDataStructure;
 import DBMSi.TableRow;
@@ -7,15 +7,15 @@ import DBMSi.TableRowRestriction;
 import java.util.ArrayList;
 
 /**
- * Created by ClaudiaPeiro on 21/6/17.
+ * Created by Xavier Roma on 22/6/17.
  */
-public class AVL extends TableDataStructure {
-    private NodeAVL root;
+public class Arbre extends TableDataStructure {
+    private AVL.NodeAVL root;
     private long size;
     private String index;
     private ArrayList<TableRow> historic;
 
-    public AVL(String index, NodeAVL node) {
+    public Arbre(String index, AVL.NodeAVL node) {
         root = node;
         size = 0;
         this.index = index;
@@ -50,7 +50,7 @@ public class AVL extends TableDataStructure {
      * Mètode que s'encarregarà de buscar en quina posició s'ha de situar
      * @param tableRow
      */
-    private void whereToPlace(NodeAVL actual, TableRow tableRow) {
+    private void whereToPlace(AVL.NodeAVL actual, TableRow tableRow) {
         int where = actual.getRoot().compareTo(index, tableRow);
         if(where < 1){
             if(where == 0) {
@@ -59,14 +59,14 @@ public class AVL extends TableDataStructure {
                 if(actual.isChildLeft()){
                     whereToPlace(actual.getChildLeft(), tableRow);
                 } else {
-                    actual.setChildLeft(new NodeAVL(tableRow));
+                    actual.setChildLeft(new AVL.NodeAVL(tableRow));
                 }
             }
         } else {
             if(actual.isChildRight()){
                 whereToPlace(actual.getChildRight(), tableRow);
             } else {
-                actual.setChildRight(new NodeAVL(tableRow));
+                actual.setChildRight(new AVL.NodeAVL(tableRow));
             }
 
         }
@@ -74,6 +74,6 @@ public class AVL extends TableDataStructure {
     }
 
     public static String getName() {
-        return "AVL";
+        return "Arbre 2-3";
     }
 }
