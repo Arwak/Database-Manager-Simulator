@@ -18,5 +18,6 @@ public enum DataType {
     FLOAT,
     DOUBLE,
     CHAR,
-    TEXT
+    TEXT;
+
 }

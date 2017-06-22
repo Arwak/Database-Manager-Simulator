@@ -1,5 +1,7 @@
 package DBMSi;
 
+import Arbre23.Arbre;
+
 import java.util.*;
 
 /**
@@ -216,7 +218,6 @@ public class Table {
 
     @Override
     public String toString() {
-
         // TODO: Per l'alumne
         return "";
     }

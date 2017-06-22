@@ -12,8 +12,10 @@ import java.util.ArrayList;
  */
 public class NodeAVL {
     private TableRow root;
-    private NodeAVL childRight;
-    private NodeAVL childLeft;
+    private NodeAVL childRight, childLeft, parent;
+    private int balance;
+    private int height;
+
 
     public NodeAVL(TableRow root) {
         this.root = root;
@@ -42,6 +44,8 @@ public class NodeAVL {
     public void setChildLeft(NodeAVL childLeft) {
         this.childLeft = childLeft;
     }
+
+    public void setParent (NodeAVL parent) { this.parent = parent; }
 
     /**
      * Mètode que servirà per saber si té fill esquerra
