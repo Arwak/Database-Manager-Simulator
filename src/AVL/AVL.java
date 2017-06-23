@@ -29,16 +29,7 @@ public class AVL extends TableDataStructure {
 
     @Override
     protected void select(TableRowRestriction restrictions) {
-        if (restrictions.test(root.getRoot())) {
-            System.out.println("----------------------------------");
-            for ( String key : root.getRoot().getContent().keySet() ) {
-                System.out.print( key + "\t\t\t\t");
-            }
-            System.out.println("");
-            System.out.println("----------------------------------");
-            System.out.println(root.getRoot().toString());
-            //TODO en cas que no estigui en root
-        }
+        whatToShow(root, restrictions, true);
     }
 
     @Override
@@ -90,6 +81,33 @@ public class AVL extends TableDataStructure {
             }
 
         }
+
+    }
+
+    /**
+     * Algorisme per buscar segons una restricció realitza una búsqueda inOrdre
+     * @param actual node actual que sesta buscant
+     * @param restriction restricció segons la que s'esta buscant
+     */
+    private void whatToShow(NodeAVL actual, TableRowRestriction restriction, Boolean first) {
+        if(actual == null) {
+            return;
+        }
+        if (restriction.test(actual.getRoot())) {
+            if(first) {
+                System.out.println("----------------------------------");
+                for ( String key : actual.getRoot().getContent().keySet() ) {
+                    System.out.print( key + "\t\t\t\t");
+                }
+                System.out.println("");
+                System.out.println("----------------------------------");
+                first = false;
+            }
+            System.out.println(actual.getRoot().toString());
+
+        }
+        whatToShow(actual.getChildLeft(), restriction, first);
+        whatToShow(actual.getChildRight(), restriction, first);
 
     }
 

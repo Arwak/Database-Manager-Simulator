@@ -29,6 +29,10 @@ public class NodeAVL {
         this.root = row;
     }
 
+    public NodeAVL getParent () {
+        return parent;
+    }
+
     public NodeAVL getChildRight() {
         return childRight;
     }

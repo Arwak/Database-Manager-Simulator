@@ -11,9 +11,11 @@ public class Menu {
 
     public static final int ES_MENU_PRINCIPAL = 0;
     public static final int ES_MENU_SECUNDARI = 1;
+    public static final int ES_MENU_TERCER = 2;
     private int numOpcioSortir;
     private int numOpcions;
     private int opcioInicial;
+    private String nomTaula;
 
     private int opcio;  // Variable que guarda l'opcio introduida per l'usuari
     /**
@@ -44,7 +46,12 @@ public class Menu {
         if (typeMenu == ES_MENU_PRINCIPAL) {
             printMenu();
         } else {
-            printMenuSecundari();
+            if (typeMenu == ES_MENU_SECUNDARI) {
+                printMenuSecundari();
+            } else {
+                printMenuTercer();
+            }
+
         }
         llegeixTeclat();
     }
@@ -74,6 +81,12 @@ public class Menu {
         System.out.println("\t8. Main menu");
     }
 
+    private void printMenuTercer() {
+        System.out.println("\t1. Stablish condition");
+        System.out.println("\t2. Execute select");
+        System.out.println("\t3. Exit");
+    }
+
     /**
      * Procdiment que llegeix l'entrada del teclat per consola
      */
@@ -81,7 +94,7 @@ public class Menu {
 
         Scanner     sc = new Scanner(System.in);    // Variable scanner
 
-        /* Controla que l'entrada sigui numerica */
+        /* Controla que l'entrada sigui númerica */
         try {
             /* Llegim el teclat */
             opcio = sc.nextInt();
@@ -109,5 +122,9 @@ public class Menu {
 
     public int getNumOpcioSortir(){
         return numOpcioSortir;
+    }
+
+    public void setNomTaula (String nomTaula) {
+        this.nomTaula = nomTaula;
     }
 }
