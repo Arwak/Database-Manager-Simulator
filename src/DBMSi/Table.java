@@ -188,6 +188,17 @@ public class Table {
         dataStructure.select(restrictions);
     }
 
+
+    /**
+     * Visualitza el contingut d'una columna en una fila restringida.
+     * @param restrictions Les restriccions a aplicar en la visualització de les files.
+     * @param column columna a mostrar.
+     */
+    public void selectUnique(TableRowRestriction restrictions, String column) {
+
+        dataStructure.selectUnique(restrictions, column);
+    }
+
     public boolean updateRow(TableRow row) {
 
         return dataStructure.update(dataStructure.getIndex(), row);
@@ -218,8 +229,18 @@ public class Table {
 
     @Override
     public String toString() {
-        // TODO: Per l'alumne
-        return "";
+        StringBuilder sb = new StringBuilder();
+        sb.append("----------------------------------").append("\n");
+        for ( String key : getColumnNames() ) {
+            sb.append(key).append("\t\t\t\t");
+        }
+        sb.append("\n");
+        sb.append("----------------------------------").append("\n");
+        return sb.toString();
+    }
+
+    public TableDataStructure getDataStructure() {
+        return dataStructure;
     }
 
 }

@@ -32,6 +32,11 @@ public class Arbre extends TableDataStructure {
     }
 
     @Override
+    protected void selectUnique(TableRowRestriction restriction, String column) {
+
+    }
+
+    @Override
     protected boolean update(String field, TableRow row) {
         return false;
     }

@@ -1,30 +1,25 @@
 package Menu;
 
 import AVL.AVL;
-import AVL.NodeAVL;
 import Arbre23.Arbre;
 import DBMSi.*;
 
 
-import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
-import static java.awt.SystemColor.info;
+//TODO update guardi que fa per opció visualitzar acabar update
 
-//TODO comprovar que m'introdueixen un tipus que toca en opció insert
 
 /**
- * Created by xavierromacastells on 12/5/17.
+ * Created by XRoma i Clupspv on 12/5/17.
  * * Classe que gestiona la crida a les funcions pertinents per realitzar cada opció
  */
 public class Gestor {
     private final static int PRIMERA_OPCIO = 1;
     private final static int NUMERO_OPCIONS = 8;
     private final static int NUMERO_OPCIONS_TERCER = 3;
-    private static ArrayList<Table> taulesAVL;
-    private static TableRowRestriction restriction;
+    private static ArrayList<Table> taulesGestor;
+    private static ArrayList<TableRowRestriction> restriction;
     private static int estructura;
     private static Table taulaTractant;
     private static int whereIsTheTable;
@@ -33,10 +28,10 @@ public class Gestor {
     /**
      * Funció que permet tenir còpia d'on es guardaran totes les taules que continguin
      * un arbre AVL de la base de dades
-     * @param AVLTree
+     * @param Tree
      */
-    public static void setAVLTree(ArrayList<Table> AVLTree) {
-        taulesAVL = AVLTree;
+    public static void setAVLTree(ArrayList<Table> Tree) {
+        taulesGestor = Tree;
     }
 
     /**
@@ -157,7 +152,7 @@ public class Gestor {
             System.out.print("\nEnter a name for the table: ");
             taula = sc.nextLine();
             taula = sc.nextLine();
-            status = tableAlreadyDefined(taula, estructura);
+            status = tableAlreadyDefined(taula);
             if (!status) {
                 System.err.print("Error, table ");
                 System.err.print(taula);
@@ -165,8 +160,8 @@ public class Gestor {
             }
         } while (!status);
 
-        columna = askForColumn(taula, sc);
-        dataType = searchDataType();
+        columna = DatabaseInput.askForColumnInicial(taula);
+        dataType = DatabaseInput.searchDataType();
 
         switch (estructura) {
             case 1:
@@ -180,23 +175,14 @@ public class Gestor {
         }
 
         do {
-            do {
-                System.out.println("Would you like to add another column? [Y/N]");
-                tipus = sc.nextLine();
-                status = tipus.equals("Y")|| tipus.equals("N");
-
-
-                if (!status) {
-                    System.err.println("Error, it is a yer or no answer! You may only answer with Y or N!");
-                }
-            } while (!status);
-
+            System.out.println("Would you like to add another column? [Y/N]");
+            tipus = DatabaseInput.askYesNo();
             if (!("Y".equals(tipus))) {
                 break;
             }
 
-            columna = askForColumn(taula, sc);
-            dataType = searchDataType();
+            columna = DatabaseInput.askForColumnInicial(taula);
+            dataType = DatabaseInput.searchDataType();
             addColumnToTable(table, columna, dataType);
 
         } while (tipus.equals("Y"));
@@ -212,7 +198,7 @@ public class Gestor {
             status = false;
             while (!status) {
                 tipus = DatabaseInput.readIndexColumnName(); //pregunta which field?
-                if((searchForColumn(table.getColumnNames(), tipus) > -1) && isCorrectType(table.getColumnType(tipus))) {
+                if((searchForColumn(table.getColumnNames(), tipus) > -1) && DatabaseInput.isCorrectType(table.getColumnType(tipus))) {
                     status = true;
                 } else {
                     System.err.println("The index must be INT or TEXT!");
@@ -221,17 +207,7 @@ public class Gestor {
             table.setIndex(tipus);
         }
 
-        switch (estructura) {
-            case 1:
-                taulesAVL.add(table);
-                break;
-            case 2:
-                //TODO ROMA afegir taula arbre 23
-                break;
-
-        }
-
-
+        taulesGestor.add(table);
     }
 
 
@@ -240,27 +216,31 @@ public class Gestor {
      */
     private static void gestioSegona(){
         Scanner     sc = new Scanner(System.in);
-        int tamanyAVL = taulesAVL.size();
+        int tamany = taulesGestor.size();
         String what;
 
-        //int tamany23
-        //TODO endreçar-ho alfabèticament
-        for (int i = 0; i < tamanyAVL; i++) {
-            System.out.println(taulesAVL.get(i).getName());
-        }
-        estructura = 1; //TODO buscar en ambdues estreuctures ficar 1 en cas AVL i 2 en cas que es trobi en arbre 23
+        Collections.sort(taulesGestor, new Comparator<Table>() {
+            @Override
+            public int compare(Table o1, Table o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
 
-        if (tamanyAVL > 0) {
+        for (int i = 0; i < tamany; i++) {
+            System.out.println(taulesGestor.get(i).getName());
+        }
+
+        if (tamany > 0) {
             do {
                 System.out.println("Which table do you want to manage?");
                 what = sc.nextLine();
-                whereIsTheTable = searchForTable(what, estructura);
+                whereIsTheTable = searchForTable(what);
             } while (whereIsTheTable < 0);
 
             Menu m;
             do {
                 m = new Menu(PRIMERA_OPCIO, NUMERO_OPCIONS, Menu.ES_MENU_SECUNDARI);
-
+                restriction = new ArrayList<TableRowRestriction>();
                 Gestor.gestionaOpcioSegonMenu(m.getOpcio());
             }while (m.getOpcio() != m.getNumOpcioSortir());
         } else {
@@ -275,11 +255,9 @@ public class Gestor {
      * Gestiona la tercera opció
      */
     private static void gestioTercera(){
-        for (int i = 0; i < taulesAVL.size(); i++) {
-            System.out.println(taulesAVL.get(i));
-            for (int a = 0; a < taulesAVL.get(i).getColumnNames().size(); a++) {
-                System.out.println(taulesAVL.get(i).getColumnNames());
-            }
+        int tamany = taulesGestor.size();
+        for (int i = 0; i < tamany; i++) {
+            mostrarTaules(taulesGestor.get(i));
         }
     }
 
@@ -288,6 +266,33 @@ public class Gestor {
      * Gestiona la quarta opció
      */
     private static void gestioQuarta(){
+        int tamany = taulesGestor.size();
+        Collections.sort(taulesGestor, new Comparator<Table>() {
+            @Override
+            public int compare(Table o1, Table o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+
+        for (int i = 0; i < tamany; i++) {
+            System.out.println("\n");
+            System.out.println("----------------------------------------------");
+            System.out.println((i + 1) + ".-\t\tTable: " + taulesGestor.get(i).getName());
+            System.out.println("\t\t" + "Rows: " + taulesGestor.get(i).getRowsNumber());
+            System.out.println("----------------------------------------------");
+        }
+
+        int what;
+        do {
+            what = DatabaseInput.askForaTable();
+        } while (!(what > 0 && what <= tamany));
+
+        String index = taulesGestor.get(what - 1).getIndex();
+        Object which = DatabaseInput.readColumnValue(taulesGestor.get(what - 1).getColumnType(index), index);
+
+        System.out.println(taulesGestor.get(what - 1).toString());
+        TableRowRestriction rest = addRestriction(which, index);
+        taulesGestor.get(what - 1).selectRows(rest);
 
     }
 
@@ -298,38 +303,30 @@ public class Gestor {
      */
     private static void gestioPrimeraMenu2(){
         Scanner     sc = new Scanner(System.in);
-
+        Boolean problems = false;
         List<String> columnNames = taulaTractant.getColumnNames();
         List<DataType> columnTypes = taulaTractant.getColumnTypes();
         int tamany = columnNames.size();
-        ArrayList<String> what = new ArrayList<>();
+        ArrayList<Object> what = new ArrayList<>();
 
         for (int aux = 0; aux < tamany; aux++) {
-            //TODO readColumnValue implementar!
-            if (columnTypes.get(aux).toString().matches("(?i)^[aeiouy].*$")) {
-                System.out.print("Enter an ");
-                System.out.print(columnTypes.get(aux).toString());
-
-            } else {
-                System.out.print("Enter a ");
-                System.out.print(columnTypes.get(aux).toString());
+            try {
+                what.add(DatabaseInput.readColumnValue(columnTypes.get(aux), columnNames.get(aux)));
+            } catch (NumberFormatException e) {
+                System.err.println("Wrong type of data!");
+                problems = true;
+                break;
             }
-            System.out.print(" value for ");
-            System.out.print(columnNames.get(aux));
-            System.out.print(":");
-            String whatToInsert = sc.nextLine();
-            what.add(whatToInsert);
-
         }
+        if (!problems) {
+            TableRow row = new TableRow();
+            for (int aux = 0; aux < tamany; aux++) {
+                row.addColumn(columnNames.get(aux), what.get(aux));
+            }
 
-        TableRow row = new TableRow();
-        for (int aux = 0; aux < tamany; aux++) {
-            row.addColumn(columnNames.get(aux), what.get(aux));
+            taulesGestor.get(whereIsTheTable).addRow(row);
+            System.out.println("Row added correctly!");
         }
-        taulesAVL.get(whereIsTheTable).addRow(row);
-        System.out.println("Row added correctly!");
-
-
     }
 
 
@@ -338,24 +335,21 @@ public class Gestor {
      *
      */
     private static void gestioSegonaMenu2(){
-        Scanner sc = new Scanner(System.in);
         String index = taulaTractant.getIndex();
-        String type = taulaTractant.getColumnType(index).toString();
-
-        if (type.matches("(?i)^[aeiouy].*$")) {
-            System.out.print("Enter an ");
-
-        } else {
-            System.out.print("Enter a ");
+        try {
+            Object what = DatabaseInput.readColumnValue(taulaTractant.getColumnType(index), index);
+            TableRowRestriction restriction = new TableRowRestriction();
+            restriction.addRestriction(index, what, TableRowRestriction.RESTRICTION_EQUALS);
+            System.out.println("----------------------------------");
+            for ( String key : taulaTractant.getColumnNames() ) {
+                System.out.print( key + "\t\t\t\t");
+            }
+            System.out.println("");
+            System.out.println("----------------------------------");
+            taulesGestor.get(whereIsTheTable).selectRows(restriction);
+        } catch (NumberFormatException e) {
+            System.err.println("Wrong type of data");
         }
-        System.out.print(type + " for " + index + ": ");
-        String what = sc.nextLine();
-        TableRowRestriction restriction = new TableRowRestriction();
-        restriction.addRestriction(index, what, TableRowRestriction.RESTRICTION_EQUALS);
-        taulesAVL.get(whereIsTheTable).selectRows(restriction);
-
-
-
     }
 
     /**
@@ -374,63 +368,107 @@ public class Gestor {
      * Gestiona la primera opció del submenu de manage table que es troba en select
      */
     private static void gestioPrimeraMenu3() {
-        String index = taulaTractant.getIndex();
-        Scanner sc = new Scanner(System.in);
-        Boolean status;
-        String column;
+        String column = askForColumn();
 
-        do {
-            System.out.println("Column? ");
-            column = sc.nextLine();
-            status = searchForColumn(taulaTractant.getColumnNames(), column) > -1;
-        } while (!status);
-
-        System.out.println("Enter a valid " + column + " in order to search: ");
-        String what = sc.nextLine();
-
-        restriction = addRestriction(what, index);
+        try {
+            Object what = DatabaseInput.readColumnValue(taulaTractant.getColumnType(column), column);
+            System.out.println(what);
+            TableRowRestriction rest = addRestriction(what, column);
+            restriction.add(rest);
+        } catch (NumberFormatException e) {
+            System.err.println("Wrong type of data!");
+        }
     }
 
     /**
-     * Funció que retorna la restricció ja feta segons l'index i a quina columna se li ha de fer la restricció
-     * @param toWhat a quina columna cal fer la restricció
-     * @param index
-     * @return restricció
+     * Gestiona la segona opció del submenu de manage table que es troba en select
      */
-    private static TableRowRestriction addRestriction (Object toWhat, String index) {
-        TableRowRestriction tableRowRestriction = new TableRowRestriction();
-        tableRowRestriction.addRestriction(index, toWhat, DatabaseInput.readRestrictionType(toWhat));
-
-        return  tableRowRestriction;
-    }
-
     private static void gestioSegonaMenu3() {
-        if (restriction == null) {
-            System.out.println("There is no restriction!");
-            return;
+        System.out.println(taulaTractant.toString());
+        if (restriction.size() < 1) {
+            taulaTractant.selectRows(new TableRowRestriction());
+
         } else {
-            taulesAVL.get(whereIsTheTable).selectRows(restriction);
+            int tamany = restriction.size();
+            for (int i = 0; i < tamany; i++) {
+                taulaTractant.selectRows(restriction.get(i));
+            }
         }
 
     }
 
-    private static void gestioTerceraMenu3() {
-        System.out.println("Estic en tercera");
-    }
 
     /**
-     * Gestiona la tercera opció del submenu de create table
+     * Gestiona la tercera opció del submenu de manage table que es troba en select
+     */
+    private static void gestioTerceraMenu3() {
+        restriction = new ArrayList<TableRowRestriction>();
+    }
+
+
+    /**
+     * Gestiona la quarta opció del submenu de create table
      */
     private static void gestioCuartaMenu2(){
+        String index = taulaTractant.getIndex();
+        List<String> listOfColumns = taulaTractant.getColumnNames();
 
+        try {
+            Object what = DatabaseInput.readColumnValue(taulaTractant.getColumnType(index), index);
+            TableRowRestriction restriction = new TableRowRestriction();
+            restriction.addRestriction(index, what, TableRowRestriction.RESTRICTION_EQUALS);
+            TableRow row = new TableRow();
+            row.addColumn(index, what);
+
+            for (String column : listOfColumns) {
+                if (column.equals(index)) {
+                    continue;
+                }
+                System.out.print("Do you want to modify the column '" + column + "' with ");
+                taulaTractant.selectUnique(restriction, column);
+                System.out.println(" value? [Y/N]");
+                String answer = DatabaseInput.askYesNo();
+                if (answer.equals("Y")) {
+                    Object newValue = DatabaseInput.readColumnValue(taulaTractant.getColumnType(column), column);
+                    row.addColumn(column, newValue);
+                }
+            }
+
+            if (taulesGestor.get(whereIsTheTable).updateRow(row) && taulaTractant.updateRow(row)) {
+                System.out.println("Row modified. Updating table " + taulaTractant.getName() + " with the changes done.");
+            }
+
+
+
+        } catch (NumberFormatException e) {
+            System.err.println("Wrong type of data");
+        }
     }
+
 
     /**
      * Gestiona la Cinquena opció del submenu de create table
      */
     private static void gestioCinquenaMenu2(){
+        String index = taulaTractant.getIndex();
+        System.out.println(taulaTractant.toString());
+        try {
+            Object what = DatabaseInput.readColumnValue(taulaTractant.getColumnType(index), index);
+            TableRowRestriction restriction = new TableRowRestriction();
+            restriction.addRestriction(index, what, TableRowRestriction.RESTRICTION_EQUALS);
+            taulaTractant.selectRows(restriction);
+            System.out.println("Are you sure you want to delete this row [Y/N]");
+            String answer = DatabaseInput.askYesNo();
+            if (answer.equals("Y")) {
+                taulaTractant.removeRow(what);
+                //taulesGestor.get(whereIsTheTable).removeRow(what);
+            }
 
+        } catch (NumberFormatException e) {
+            System.err.println("Wrong type of data");
+        }
     }
+
 
     /**
      * Gestiona la Sisena opció del submenu de create table
@@ -439,12 +477,14 @@ public class Gestor {
 
     }
 
+
     /**
      * Gestiona la setena opció del submenu de create table
      */
     private static void gestioSetenaMenu2(){
 
     }
+
 
     /**
      * Gestiona la vuitena opció del submenu de create table
@@ -454,84 +494,51 @@ public class Gestor {
     }
 
 
-    /**
-     * Comprova si existeix DataStructure seleccionat
-     * @param tipus tipus de dataStructure introduit per l'usuari
-     * @return retornarà el DataStructure addient, null en cas que no existeixi
-     */
-    public static DataType setiComprovaTipus(String tipus) {
-        if(tipus.equals(DataType.BOOLEAN.toString())) {
-            return DataType.BOOLEAN;
-        }
+    /************************ PARLAR AMB ROMA D'ON FICAR AQUESTS MÈTODES ******************/
 
-        if(tipus.equals(DataType.CHAR.toString())) {
-            return DataType.CHAR;
-        }
-
-        if(tipus.equals(DataType.FLOAT.toString())) {
-            return DataType.FLOAT;
-        }
-
-        if(tipus.equals(DataType.LONG.toString())) {
-            return DataType.LONG;
-        }
-
-        if(tipus.equals(DataType.INT.toString())) {
-            return DataType.INT;
-        }
-
-        if(tipus.equals(DataType.DOUBLE.toString())) {
-            return DataType.DOUBLE;
-        }
-
-        if(tipus.equals(DataType.INT.toString())) {
-            return DataType.INT;
-        }
-
-        if(tipus.equals(DataType.TEXT.toString())) {
-            return DataType.TEXT;
-        }
-        return null;
-    }
 
     /**
      * Mètode que realitza búqueda d'una taula a partir d'una estructura. Assignarnarà valor  taulaTractant
      * per facilitar el posterior tractament de la taula
      * @param nomTable nom de la taula a buscar
-     * @param estructura estructura on buscar
      * @return on es troba la taula
      */
-    private static int searchForTable (String nomTable, int estructura) {
-        switch (estructura) {
-            case 1:
-                int tamany = taulesAVL.size();
-                for (int i = 0; i < tamany; i++) {
-                    if (taulesAVL.get(i).getName().equals(nomTable)) {
-                        taulaTractant = taulesAVL.get(i);
-                        return i;
-                    }
+    private static int searchForTable (String nomTable) {
+        int tamany = taulesGestor.size();
+        for (int i = 0; i < tamany; i++) {
+            if (taulesGestor.get(i).getName().equals(nomTable)) {
+                taulaTractant = taulesGestor.get(i);
+                if (taulesGestor.get(i).getDataStructure() instanceof AVL) {
+                    estructura = 1;
+                } else {
+                    estructura = 2;
                 }
-                break;
+                return i;
+            }
         }
         return -1;
+
     }
 
     /**
-     * Funció que mostra per pantalla la petició d'una columna
-     * @param taula nom de la taula
-     * @param sc scanner per poder agafard nom de la columna
-     * @return string amb el nom de la columna pel seu posterior tractament
+     * Crida a la funció pertinent per tal que faci la petició d'una columna i comprova si la columna ja existeix
+      * @return el nom de la columna en cas que aquesta no hagi estat ja inserida
      */
-    private static String askForColumn (String taula, Scanner sc) {
-        System.out.print("Enter a column name for the new table ");
-        System.out.print(taula);
-        System.out.println(":");
-        return sc.nextLine();
+
+    private static String askForColumn(){
+        Boolean status;
+        String column;
+        do {
+            column = DatabaseInput.askForColumn();
+            status = searchForColumn(taulaTractant.getColumnNames(), column) > -1;
+        } while (!status);
+
+        return column;
     }
 
 
     /**
-     * Funció que afegeix columnes a la taula
+     * Funció que afegeix columnes a la taula en cas que no sigui possible retornarà missatge d'error
      * @param table taula on s'inserirà la columna
      * @param columna columna que s'inserirà a la taula
      * @param dataType tipus de la columna que s'inserirà
@@ -547,52 +554,26 @@ public class Gestor {
 
 
     /**
-     * Funció que busca i comprova que el tipus de dada introduida sigui correcte
-     * @return tipus de DataType, null si és incorrecte
+     * Funció que comprovarà si la taula que es desitja inserir ja existeix en el gestor
+     * @param taula nom de la taula que es desitja inserir
+     * @return retornarà cert si no està ja definida, fals altrament
      */
-    private static DataType searchDataType () {
-        Scanner sc = new Scanner(System.in);
-        String tipus;
-        Boolean status = false;
-        DataType dataType = null;
-
-
-        while (!status) {
-            System.out.println("Which kind of data stores this column?");
-            tipus = sc.nextLine();
-            dataType = setiComprovaTipus(tipus);
-            status = (dataType != null);
-            if (!status) {
-                System.err.print("Error, type ");
-                System.err.print(tipus);
-                System.err.println(" doesn't exists");
-            }
+    private static boolean tableAlreadyDefined(String taula) {
+        for (int i = 0; i < taulesGestor.size(); i++) {
+           if (taulesGestor.get(i).getName().equals(taula)) {
+               return false;
+           }
         }
-        return dataType;
+        return true;
     }
 
 
     /**
-     * Funció que comprovarà si la taula que es desitja inserir ja existeix en el gestor
-     * @param taula nom de la taula que es desitja inserir
-     * @param estructura en quina estructura es desitja inserir (1-AVL, 2-Arbre2-3)
-     * @return retornarà cert si no està ja definida, fals altrament
+     * Funció que busca si la columna solicitada existeix en la llista facilitada
+     * @param possible llista de columnes existents
+     * @param column columna que es desitja comprovar si està
+     * @return -1 en cas que no existeixi, altrament index on es troba respecte la llista
      */
-    private static boolean tableAlreadyDefined(String taula, int estructura) {
-
-        switch (estructura) {
-            case 1:
-                return !(taulesAVL.contains(taula));
-
-            case 2:
-                //Comprovació si existeix per arbre 23
-                break;
-
-        }
-        return false;
-
-    }
-
     private static int searchForColumn(List<String> possible, String column) {
         int tamany = possible.size();
         for (int a = 0; a < tamany; a++) {
@@ -604,9 +585,40 @@ public class Gestor {
 
     }
 
-    private static boolean isCorrectType(DataType possible) {
-        return possible.toString().equals("INT") || possible.toString().equals("TEXT");
 
+    /**
+     * Funció que retorna la restricció ja feta segons l'index i a quina columna se li ha de fer la restricció
+     * @param toWhat valor restrictiu
+     * @param field a quina columna realitzar restricció
+     * @return restricció
+     */
+    private static TableRowRestriction addRestriction (Object toWhat, String field) {
+        TableRowRestriction tableRowRestriction = new TableRowRestriction();
+        int rest = DatabaseInput.readRestrictionType(toWhat);
+        tableRowRestriction.addRestriction(field, toWhat, rest);
+        return  tableRowRestriction;
+    }
+
+
+    /**
+     * Mètode que mostra per pantalla la informaicó pertinent a les columnes d'una taula
+     * i els seus respectiu tipus. Mostrarà també el nombre de files per cada taula
+     * @param table taula respecte la qual es mostrarà
+     */
+    private static void mostrarTaules (Table table) {
+        System.out.print("Table ");
+        System.out.println(table.getName());
+        System.out.println("\t----------------------------------------------");
+        System.out.println("\tColumn\t\t\t\t\tData Type");
+        System.out.println("\t----------------------------------------------");
+        int size = table.getColumnNames().size();
+        for (int a = 0; a < size; a++) {
+            System.out.print("\t"+ String.format("%-20s ", table.getColumnNames().get(a)));
+            System.out.println("\t"+ String.format("%-20s ", table.getColumnTypes().get(a)));
+        }
+        System.out.println("\n\t----------------------------------------------");
+        System.out.println("\tNumber of rows in this table: " + table.getRowsNumber());
+        System.out.println("\n\n");
     }
 }
 

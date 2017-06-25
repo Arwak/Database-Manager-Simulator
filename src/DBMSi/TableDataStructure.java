@@ -53,6 +53,14 @@ public abstract class TableDataStructure {
     protected abstract void select(TableRowRestriction restrictions);
 
     /**
+     * Visualitza el contingut de l'estructura de dades.
+     *
+     * @param restriction Restriccions per tal de filtrar files en la visualització.
+     * @param column Restriccions per tal de filtrar tant sols el valor d'una columna en la visualització.
+     */
+    protected abstract void selectUnique(TableRowRestriction restriction, String column);
+
+    /**
      * Permet actualitzar una fila de l'estructura de dades.
      *
      * @param field El camp pel qual cercar la fila existent.

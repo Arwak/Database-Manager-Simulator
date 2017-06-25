@@ -66,7 +66,6 @@ public class TableRow {
 
         else if (obj1 instanceof Integer)
             result = ((Integer) obj1).compareTo((Integer) obj2);
-
         else if (obj1 instanceof Long)
             result = ((Long) obj1).compareTo((Long) obj2);
 

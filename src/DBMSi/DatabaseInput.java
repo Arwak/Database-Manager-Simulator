@@ -1,5 +1,6 @@
 package DBMSi;
 
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -93,8 +94,122 @@ public class DatabaseInput {
         System.out.println("How do you want to restrict the value?");
         System.out.println("1. Less than " + restrictionValue.toString());
         System.out.println("2. Equals to " + restrictionValue.toString());
-        System.out.println("3. Greather than " + restrictionValue.toString());
+        System.out.println("3. Greater than " + restrictionValue.toString());
 
         return Integer.parseInt(scanner.nextLine());
+    }
+
+    public static String askYesNo() {
+        String tipus;
+        Scanner sc = new Scanner(System.in);
+        Boolean status;
+        do {
+            tipus = sc.nextLine();
+            status = tipus.equals("Y")|| tipus.equals("N");
+
+
+            if (!status) {
+                System.err.println("Error, this is a yes or no answer! You may only answer with Y or N!");
+            }
+        } while (!status);
+
+        return tipus;
+    }
+
+    public static boolean isCorrectType(DataType possible) {
+        return possible.toString().equals("INT") || possible.toString().equals("TEXT");
+
+    }
+
+    /**
+     * Funció que mostra per pantalla la petició d'una columna. Serà la petició primera del
+     * menú
+     * @param taula nom de la taula
+     * @return string amb el nom de la columna pel seu posterior tractament
+     */
+    public static String askForColumnInicial(String taula) {
+        System.out.print("Enter a column name for the new table ");
+        System.out.print(taula);
+        System.out.println(":");
+        return scanner.nextLine();
+    }
+
+    /**
+     * Comprova si existeix DataStructure seleccionat
+     * @param tipus tipus de dataStructure introduit per l'usuari
+     * @return retornarà el DataStructure addient, null en cas que no existeixi
+     */
+    public static DataType setiComprovaTipus(String tipus) {
+        if(tipus.equals(DataType.BOOLEAN.toString())) {
+            return DataType.BOOLEAN;
+        }
+
+        if(tipus.equals(DataType.CHAR.toString())) {
+            return DataType.CHAR;
+        }
+
+        if(tipus.equals(DataType.FLOAT.toString())) {
+            return DataType.FLOAT;
+        }
+
+        if(tipus.equals(DataType.LONG.toString())) {
+            return DataType.LONG;
+        }
+
+        if(tipus.equals(DataType.INT.toString())) {
+            return DataType.INT;
+        }
+
+        if(tipus.equals(DataType.DOUBLE.toString())) {
+            return DataType.DOUBLE;
+        }
+
+        if(tipus.equals(DataType.INT.toString())) {
+            return DataType.INT;
+        }
+
+        if(tipus.equals(DataType.TEXT.toString())) {
+            return DataType.TEXT;
+        }
+        return null;
+    }
+
+    /**
+     * Funció que busca i comprova que el tipus de dada introduida sigui correcte
+     * @return tipus de DataType, null si és incorrecte
+     */
+    public static DataType searchDataType() {
+        String tipus;
+        Boolean status = false;
+        DataType dataType = null;
+
+
+        while (!status) {
+            System.out.println("Which kind of data stores this column?");
+            tipus = scanner.nextLine();
+            dataType = DatabaseInput.setiComprovaTipus(tipus);
+            status = (dataType != null);
+            if (!status) {
+                System.err.print("Error, type ");
+                System.err.print(tipus);
+                System.err.println(" doesn't exists");
+            }
+        }
+        return dataType;
+    }
+
+    public static String askForColumn(){
+        String column;
+        System.out.println("Column? ");
+        column = scanner.nextLine();
+        return column;
+    }
+
+    public static int askForaTable() {
+        int table;
+        System.out.println("Select a table: ");
+        table = scanner.nextInt();
+        scanner.nextLine();
+        return table;
     }
 }

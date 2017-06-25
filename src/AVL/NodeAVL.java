@@ -66,4 +66,12 @@ public class NodeAVL {
     public boolean isChildRight() {
         return childRight != null;
     }
+
+    public void setExistanceChildLeft() {
+        childLeft = null;
+    }
+
+    public void setExistanceChildRight() {
+        childRight = null;
+    }
 }
