@@ -8,7 +8,7 @@ import DBMSi.*;
 import java.util.*;
 
 //TODO update guardi que fa per opció visualitzar acabar update
-
+//TODO control lletres en tria de quin arbre
 
 /**
  * Created by XRoma i Clupspv on 12/5/17.
@@ -141,7 +141,7 @@ public class Gestor {
             try {
                 estructura = sc.nextInt();
             } catch (java.util.InputMismatchException e) {
-                System.err.println("Error, opcio no vàlida");
+                System.err.println("Error, opció no vàlida");
                 estructura = -1;
                 System.out.println("");
 

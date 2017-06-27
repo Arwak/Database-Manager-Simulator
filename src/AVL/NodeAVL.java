@@ -19,7 +19,13 @@ public class NodeAVL {
 
     public NodeAVL(TableRow root) {
         this.root = root;
+        balance = 0;
+        height = 0;
+        childRight = null;
+        childLeft = null;
+        parent = null;
     }
+
 
     public TableRow getRoot() {
         return root;
@@ -73,5 +79,25 @@ public class NodeAVL {
 
     public void setExistanceChildRight() {
         childRight = null;
+    }
+
+    public void updateHeight() {
+        if (getParent() != null) {
+            height = getParent().getHeight() + 1;
+        } else {
+            height = 0;
+        }
+    }
+
+    public int getHeight () {
+        return height;
+    }
+
+    public int getBalance () {
+        return balance;
+    }
+
+    public void setBalance (int balance) {
+        this.balance = balance;
     }
 }

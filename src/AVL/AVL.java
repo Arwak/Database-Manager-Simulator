@@ -1,6 +1,5 @@
 package AVL;
 
-import DBMSi.Table;
 import DBMSi.TableDataStructure;
 import DBMSi.TableRow;
 import DBMSi.TableRowRestriction;
@@ -78,6 +77,8 @@ public class AVL extends TableDataStructure {
                     size++;
                     actual.setChildRight(new NodeAVL(tableRow));
                     actual.getChildRight().setParent(actual);
+                    actual.getChildRight().updateHeight();
+                    calculHeight(actual, true);
                 }
             }
         } else {
@@ -87,8 +88,158 @@ public class AVL extends TableDataStructure {
                 size++;
                 actual.setChildLeft(new NodeAVL(tableRow));
                 actual.getChildLeft().setParent(actual);
+                actual.getChildLeft().updateHeight();
+                calculHeight(actual, true);
             }
 
+        }
+
+    }
+
+    private void calculHeight(NodeAVL actual, Boolean endarrere) {
+        int left = heightLeft(actual);
+        int right = heightRight(actual);
+        int balance = Math.abs(left - right);
+
+        if (balance < 2) {
+            actual.setBalance(balance);
+            if (actual.getHeight() != 0) {
+                if (endarrere) {
+                    calculHeight(actual.getParent(), true);
+                }
+            }
+
+        } else {
+            if (Math.abs(right) > Math.abs(left)) {
+                NodeAVL quinAMirar = actual.getChildRight();
+                if (heightRight(quinAMirar) > heightLeft(quinAMirar)) {
+                    movimentRR(actual, true);
+                } else {
+                    movimentRL(actual);
+                }
+
+            } else {
+                if (Math.abs(left)  > Math.abs(right)) {
+                    NodeAVL quinAMirar = actual.getChildLeft();
+                    if (heightLeft(quinAMirar)  > heightRight(quinAMirar)) {
+                        movimentLL(actual, true);
+                    } else {
+                        movimentLR(actual);
+                    }
+
+                }
+            }
+
+        }
+
+    }
+
+    public int heightLeft (NodeAVL actual) {
+        int balance = actual.getBalance() == 0 ? -actual.getHeight() : actual.getBalance();
+        if (actual.getChildLeft() != null) {
+            actual.getChildLeft().updateHeight();
+        }
+        return actual.getChildLeft() == null ? 0 : actual.getChildLeft().getHeight() + balance;
+    }
+
+    public int heightRight (NodeAVL actual) {
+        int balance = actual.getBalance() == 0 ? -actual.getHeight() : actual.getBalance();
+        if (actual.getChildRight() != null) {
+            actual.getChildRight().updateHeight();
+        }
+        return actual.getChildRight() == null ? 0 : actual.getChildRight().getHeight() + balance;
+    }
+
+    private void movimentRL (NodeAVL actual) {
+        System.out.println("Toca moviment RL! De: " + actual.getRoot().toString());
+        movimentLL(actual.getChildRight(), false);
+        movimentRR(actual, true);
+    }
+
+    private void movimentLR (NodeAVL actual) {
+        System.out.println("Toca moviment LR! De: " + actual.getRoot().toString());
+        movimentRR(actual.getChildLeft(), false);
+        movimentLL(actual, true);
+    }
+
+    private void movimentRR (NodeAVL actual, Boolean balanceig) {
+        System.out.println("Toca moviment RR! De: " + actual.getRoot().toString());
+
+        NodeAVL row = new NodeAVL(actual.getRoot());
+        NodeAVL pare = actual.getParent();
+
+        actual = actual.getChildRight();
+        row.setParent(actual);
+        row.updateHeight();
+        actual.setChildLeft(row);
+        actual.setParent(pare);
+        actual.updateHeight();
+        if  (actual.getHeight() == 0) {
+            root = actual;
+        }
+        if (actual.getParent() != null) {
+            if (actual.getParent().getRoot().compareTo(index, actual.getRoot()) < 1) {
+                actual.getParent().setChildRight(actual);
+            } else {
+                actual.getParent().setChildLeft(actual);
+            }
+
+        }
+
+        actual.setBalance(actual.getBalance() - 1);
+        actual.getChildLeft().setBalance( actual.getChildLeft().getBalance() - 1);
+
+        if (balanceig) {
+            actual.getChildRight().setBalance( actual.getChildRight().getBalance() - 1);
+        }
+
+        if (balanceig) {
+            calculHeight(actual.getChildRight(), false);
+            calculHeight(actual.getChildLeft(), false);
+            calculHeight(actual, false);
+        }
+
+
+    }
+
+    private void movimentLL (NodeAVL actual, Boolean balanceig) {
+        System.out.println("Toca moviment LL! De: " + actual.getRoot().toString());
+
+        NodeAVL row = new NodeAVL(actual.getRoot());
+        NodeAVL pare = actual.getParent();
+
+        actual = actual.getChildLeft();
+        row.setParent(actual);
+        row.updateHeight();
+        actual.setChildRight(row);
+        actual.setParent(pare);
+        actual.updateHeight();
+        if  (actual.getHeight() == 0) {
+            root = actual;
+        }
+        if (actual.getParent() != null) {
+            if (actual.getParent().getRoot().compareTo(index, actual.getRoot()) < 1) {
+                actual.getParent().setChildRight(actual);
+            } else {
+                actual.getParent().setChildLeft(actual);
+            }
+
+        }
+
+        System.out.println(root.getRoot().toString());
+        System.out.println(root.getChildRight().getRoot().toString());
+        System.out.println(root.getChildRight().getChildRight().getRoot().toString());
+
+        actual.setBalance(actual.getBalance() - 1);
+        if (balanceig) {
+            actual.getChildLeft().setBalance( actual.getChildLeft().getBalance() - 1);
+        }
+        actual.getChildRight().setBalance( actual.getChildRight().getBalance() - 1);
+
+        if (balanceig) {
+            calculHeight(actual.getChildLeft(), false);
+            calculHeight(actual.getChildRight(), false);
+            calculHeight(actual, false);
         }
 
     }
