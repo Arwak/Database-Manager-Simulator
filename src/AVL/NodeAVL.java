@@ -26,6 +26,15 @@ public class NodeAVL {
         parent = null;
     }
 
+    public NodeAVL(NodeAVL node) {
+        this.root = node.getRoot();
+        balance = node.getBalance();
+        height = 0;
+        childRight = node.getChildRight();
+        childLeft = node.getChildLeft();
+        parent = null;
+    }
+
 
     public TableRow getRoot() {
         return root;
@@ -81,16 +90,20 @@ public class NodeAVL {
         childRight = null;
     }
 
-    public void updateHeight() {
+    /*public void updateHeight() {
         if (getParent() != null) {
             height = getParent().getHeight() + 1;
         } else {
             height = 0;
         }
-    }
+    }*/
 
     public int getHeight () {
         return height;
+    }
+
+    public void setHeight (int height) {
+        this.height = height;
     }
 
     public int getBalance () {
