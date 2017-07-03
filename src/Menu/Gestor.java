@@ -3,7 +3,6 @@ package Menu;
 import AVL.AVL;
 import Arbre23.Arbre;
 import DBMSi.*;
-import com.sun.tools.javac.util.Name;
 
 
 import java.util.*;
@@ -171,7 +170,9 @@ public class Gestor {
 
                 break;
             case 2:
-                //TODO Roma inserir table de tipus arbre23
+                table = new Table(taula, new Arbre(columna));
+                addColumnToTable(table, columna, dataType);
+                //TODO Clups confirma'm si això està bé
                 break;
         }
 

@@ -69,10 +69,6 @@ public class Arbre extends TableDataStructure {
         super.setIndex(index);
     }
 
-    public boolean afegir(TableRow hola){
-        return add(hola);
-    }
-
     @Override
     protected void showHistoric(String field, Object valor) {
 
@@ -105,25 +101,45 @@ public class Arbre extends TableDataStructure {
 
     }
 
-
     @Override
     protected void select(TableRowRestriction restrictions) {
-
+        buscarSelect(arrel, restrictions);
     }
 
     @Override
     protected void selectUnique(TableRowRestriction restriction, String column) {
-
+        buscarUnique(arrel, restriction, column);
     }
 
     @Override
     protected boolean update(String field, TableRow row) {
+        Node node = buscarNode(row, arrel);
+        if (node.tbesq.compareTo(index, row) == 0) {
+            node.tbesq = row;
+            return true;
+        } else if (node.tbdret != null && node.tbdret.compareTo(index, row) == 0) {
+            node.tbdret = row;
+            return true;
+        }
+
         return false;
     }
 
+
     @Override
     protected boolean remove(String field, Object value) {
-        return false;
+        TableRow tb = (TableRow) value;
+        Node toDelete = buscarNode(tb, arrel);
+
+        if (toDelete.tbesq.compareTo(index, tb) != 0 && (toDelete.tbdret == null || toDelete.tbdret.compareTo(index, tb) != 0)) {
+            return false;
+        }
+
+        if (toDelete.esq != null) {
+            toDelete = swapToDelete(toDelete, tb);
+        }
+        deleteLeaf(tb, toDelete);
+        return true;
     }
 
     @Override
@@ -131,16 +147,104 @@ public class Arbre extends TableDataStructure {
         return size;
     }
 
+    private void buscarSelect(Node node, TableRowRestriction rest) {
+
+        if(node != null) {
+
+            if (rest.test(node.tbesq)) {
+                System.out.println(node.tbesq.toString());
+            }
+            buscarSelect(node.esq, rest);
+            buscarSelect(node.mig, rest);
+
+            if (node.tbdret != null) {
+
+                if (rest.test(node.tbdret)) {
+                    System.out.println(node.tbdret.toString());
+                }
+                buscarSelect(node.dret, rest);
+            }
+        }
+    }
+
+    private void buscarUnique(Node node, TableRowRestriction rest, String column) {
+
+        if(node != null) {
+
+            if (rest.test(node.tbesq)) {
+                System.out.println(node.tbesq.getContent().get(column).toString());
+            }
+            buscarUnique(node.esq, rest, column);
+            buscarUnique(node.mig, rest, column);
+
+            if (node.tbdret != null) {
+
+                if (rest.test(node.tbdret)) {
+                    System.out.println(node.tbdret.getContent().get(column).toString());
+                }
+                buscarUnique(node.dret, rest, column);
+            }
+        }
+    }
+
     public static String getName() {
         return "Arbre 2-3";
     }
 
-    /**
-     *
-     * @param row
-     * @param node
-     * @return
-     */
+    private Node buscarNode (TableRow row, Node node) {
+        Node aux;
+
+
+        if (node.esFulla()) {
+
+            aux = node;
+
+        } else {
+            int comparacio = row.compareTo(index, node.tbesq);
+            if (comparacio == 0) {
+                return node;
+            }
+            if (node.tbdret == null) {
+                // is 2-node
+                if (comparacio == -1) {
+
+                    aux = buscarNode(row, node.esq);
+
+                } else {
+                    aux = buscarNode(row, node.mig);
+
+                }
+            } else {
+                // else is 3-node
+                if (comparacio == -1) {
+                    aux = buscarNode(row, node.esq);
+
+
+                } else {
+                    comparacio = row.compareTo(index, node.tbdret);
+
+                    if (comparacio == 0) {
+                        return node;
+                    }
+                    if (comparacio == -1) {
+                        aux = buscarNode(row, node.mig);
+
+                    } else {
+                        aux = buscarNode(row, node.dret);
+
+                    }
+
+                }
+            }
+        }
+
+        if (aux == null) {
+            return arrel;
+        }
+
+        return aux;
+    }
+
     private Node search(TableRow row, Node node) {
         /*
        CERCAR un element ‘a’
@@ -192,9 +296,6 @@ public class Arbre extends TableDataStructure {
         }
         return aux;
     }
-
-
-
 
     private boolean insert (TableRow row, Node node){
 
@@ -277,7 +378,6 @@ public class Arbre extends TableDataStructure {
 
         return status;
     }
-
 
     private void split(Node nou_esq, Node nou_mig, TableRow nou, Node pare) {
 
@@ -374,14 +474,415 @@ public class Arbre extends TableDataStructure {
         }
     }
 
+    private Node swapToDelete (Node node, TableRow tb) {
+        Node nodeFulla; // node on posarem el valor que volem borrar
+        TableRow table; // var per fer el swap
+        if (node.tbesq.compareTo(index, tb) == 0) {
+            //tb to be deleted is in node.tbesq
+            nodeFulla = bringNode(node.esq);
+            if (nodeFulla.tbdret != null) {
+                table = nodeFulla.tbdret;
+                nodeFulla.tbdret = tb;
+            } else {
+                table = nodeFulla.tbesq;
+                nodeFulla.tbesq = tb;
+            }
+            node.tbesq = table;
+
+            System.out.println(node.tbesq.getContent().get(index).toString() + "canviat per: " + nodeFulla.tbesq.getContent().get(index).toString());
+
+        } else {
+            //tb to be deleted is in node.tbdret
+            nodeFulla = bringNode(node.mig);
+            if (nodeFulla.tbdret != null) {
+                table = nodeFulla.tbdret;
+                nodeFulla.tbdret = tb;
+
+            } else {
+                table = nodeFulla.tbesq;
+                nodeFulla.tbesq = tb;
+            }
+
+            node.tbdret = table;
+        }
+        return nodeFulla;
+    }
+
+    private Node bringNode (Node node) {
+        if (node.esq == null) {
+            //is leaf
+            return node;
+        }
+        if (node.dret != null) {
+            return bringNode(node.dret);
+        } else {
+            return bringNode(node.mig);
+        }
+
+    }
+
+    private void deleteLeaf (TableRow tb, Node actual) {
+        if (actual.tbesq.compareTo(index, tb) == 0) {
+            actual.tbesq = actual.tbdret;
+            if (actual.tbdret == null) {
+                balance(actual);
+            } else {
+                actual.tbdret = null;
+            }
+        } else {
+            actual.tbdret = null;
+        }
+
+    }
+
+    private void balance(Node actual) {
+        if (actual.pare == null && actual.tbesq == null && actual.esq != null) {
+            arrel = actual.esq;
+        } else {
+            // [Start:case3:case 2]
+            if (actual.pare.tbdret == null && actual.pare.esq.tbdret == null && actual.pare.mig.tbdret == null) {
+                //daddy and childs 2-node
+                if (actual.pare.mig == actual) {
+                    //actual is the mid child
+                    actual.pare.esq.tbdret = actual.pare.tbesq;
+                    actual.pare.esq.dret = actual.esq;
+                    if (actual.esq != null) {
+                        actual.esq.pare = actual.pare.esq;
+                    }
+
+                    actual.pare.mig = null;
+                    actual.pare.tbesq = null;
+                    balance(actual.pare);
+
+                } else if (actual.pare.esq == actual) {
+                    //actual is the left child
+                    actual.tbesq = actual.pare.tbesq;
+                    actual.tbdret = actual.pare.mig.tbesq;
+                    actual.mig = actual.pare.mig.esq;
+                    actual.dret = actual.pare.mig.mig;
+                    actual.pare.mig = null;
+                    actual.pare.tbesq = null;
+                    balance(actual.pare);
+                    if (actual.pare.mig.esq != null) {
+                        actual.pare.mig.esq.pare = actual;
+                    }
+                }
+                // [End:case3:case 2]
+            } else {
+                //Father is 3-node [Start:case 2]
+                if (actual.pare.dret == actual) {
+                    //actual is the right node
+                    if (actual.pare.mig.tbdret != null) {
+                        //bingo the mid brother has two keys, time to borrow one
+                        actual.tbesq = actual.pare.tbdret;
+                        actual.pare.tbdret = actual.pare.mig.tbdret;
+                        actual.pare.mig.tbdret = null;
+
+                        actual.mig = actual.esq;
+                        actual.esq = actual.pare.mig.dret;
+                        actual.pare.mig.dret = null;
+                        if (actual.pare.mig.dret != null) {
+                            actual.pare.mig.dret.pare = actual;
+                        }
+
+                    } else {
+                        //little nightmare [Start:case3-case1]
+                        actual.pare.mig.tbdret = actual.pare.tbdret;
+                        actual.pare.tbdret = null;
+                        actual.pare.mig.dret = actual.esq;
+                        actual.pare.dret = null;
+                        if (actual.esq != null) {
+                            actual.esq.pare = actual.pare.mig;
+                        }
+                        //[End:case3:case1]
+                    }
+
+                } else if (actual.pare.mig == actual) {
+                    //actual is the mid node
+                    if (actual.pare.esq.tbdret != null) {
+                        //left brother has 2 keys
+                        actual.tbesq = actual.pare.tbesq;
+                        actual.pare.tbesq = actual.pare.esq.tbdret;
+                        actual.pare.esq.tbdret = null;
+
+                        actual.mig = actual.esq;
+                        actual.esq = actual.pare.esq.dret;
+                        actual.pare.esq.dret = null;
+                        if (actual.esq != null) {
+                            actual.esq.pare = actual;
+                        }
+                        //well IT HAD two keys ja ja haa
+                    } else if (actual.pare.dret.tbdret != null) {
+                        //right brother has two keys luckly is not my real-life brother
+                        actual.tbesq = actual.pare.tbdret;
+                        actual.pare.tbdret = actual.pare.dret.tbesq;
+                        actual.pare.dret.tbesq = actual.pare.dret.tbdret;
+                        actual.pare.dret.tbdret = null;
+
+                        actual.mig = actual.pare.dret.esq;
+                        actual.pare.dret.esq = actual.pare.dret.mig;
+                        actual.pare.dret.mig = actual.pare.dret.dret;
+                        actual.pare.dret.dret = null;
+
+                        if (actual.mig != null) {
+                            actual.mig.pare = actual;
+                        }
+
+                    } else {
+                        //[Start:case3-case1]
+                        if (actual.esq != null) {
+                            actual.esq.pare = actual.pare.esq;
+                            actual.pare.dret.esq.pare = actual;
+                            actual.pare.dret.mig.pare = actual;
+                        }
+                        actual.pare.esq.tbdret = actual.pare.tbesq;
+                        actual.pare.tbesq = actual.pare.tbdret;
+                        actual.pare.tbdret = null;
+                        actual.pare.esq.dret = actual.esq;
+                        actual.pare.mig = actual.pare.dret;
+                        actual.pare.dret = null;
+                        //[End:case3:case1]
+
+
+
+                    }
+
+                } else if (actual.pare.esq == actual) {
+                    //actual is the left brother
+
+                    if (actual.pare.mig.tbdret != null) {
+                        //mid brother has two keys
+                        if (actual.pare.mig.esq != null) {
+                            actual.pare.mig.esq.pare = actual;
+                        }
+                        actual.tbesq = actual.pare.tbesq;
+                        actual.pare.tbesq = actual.pare.mig.tbesq;
+                        actual.pare.mig.tbesq = actual.pare.mig.tbdret;
+                        actual.pare.mig.tbdret = null;
+
+                        actual.mig = actual.pare.mig.esq;
+                        actual.pare.mig.esq = actual.pare.mig.mig;
+                        actual.pare.mig.mig = actual.pare.mig.dret;
+                        actual.pare.mig.dret = null;
+
+                    } else {
+                        //[Start:case3-case1]
+                        actual.tbesq = actual.pare.tbesq;
+                        actual.tbdret = actual.pare.mig.tbesq;
+                        actual.pare.tbesq = actual.pare.tbdret;
+                        actual.mig = actual.pare.mig.esq;
+                        actual.dret = actual.pare.mig.mig;
+                        actual.pare.mig = actual.pare.dret;
+                        actual.pare.dret = null;
+                        actual.pare.tbdret = null;
+
+                        if (actual.mig != null) {
+                            actual.mig.pare = actual;
+                        }
+                        if (actual.dret != null) {
+                            actual.dret.pare = actual;
+                        }
+                        //[End:case3:case1]
+                    }
+                }
+                // [End:case 2]
+            }
+        }
+        System.out.println("espero");
+    }
+
+    public void delete(TableRow tb) {
+        remove(index, tb);
+    }
+
+    public void radiografia(){
+        System.out.print("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t[" + arrel.tbesq.getContent().get(index).toString() + ".");
+
+        try {
+            System.out.println(arrel.tbdret.getContent().get(index).toString() + "]");
+        }catch (NullPointerException e) {
+            System.out.println("nil]");
+        }
+
+        System.out.println("");
+
+        try {
+            System.out.print("\t\t\t\t\t\t[" + arrel.esq.tbesq.getContent().get(index).toString() + ".");
+        }catch (NullPointerException e) {
+            System.out.print("\t\t\t\t\t\t[nil.");
+        }
+        try {
+            System.out.println(arrel.esq.tbdret.getContent().get(index).toString() + "]");
+        }catch (NullPointerException e) {
+            System.out.println("nil]");
+        }
+
+        System.out.println("");
+        try {
+            System.out.print("\t[" + arrel.esq.esq.tbesq.getContent().get(index).toString() + ".");
+        }catch (NullPointerException e) {
+            System.out.print("\t[nil.");
+        }
+
+        try {
+            System.out.print(arrel.esq.esq.tbdret.getContent().get(index).toString() + "]");
+        }catch (NullPointerException e) {
+            System.out.print("nil]");
+        }
+        try {
+            System.out.print("\t\t\t\t[" + arrel.esq.mig.tbesq.getContent().get(index).toString() + ".");
+        }catch (NullPointerException e) {
+            System.out.print("\t\t\t\t[nil.");
+        }
+
+        try {
+            System.out.print(arrel.esq.mig.tbdret.getContent().get(index).toString() + "]");
+        }catch (NullPointerException e) {
+            System.out.print("nil]");
+        }
+        try {
+            System.out.print("\t\t\t\t\t[" + arrel.esq.dret.tbesq + ".");
+        }catch (NullPointerException e) {
+            System.out.print("\t\t\t\t\t[nil.");
+        }
+        try {
+            System.out.println(arrel.esq.dret.tbdret + "]");
+        }catch (NullPointerException e) {
+            System.out.println("nil]");
+        }
+        System.out.println("");
+
+        try {
+            System.out.print("[" + arrel.esq.esq.esq.tbesq.getContent().get(index).toString() + ".");
+        }catch (NullPointerException e) {
+            System.out.print("[nil.");
+        }
+        try {
+            System.out.print(arrel.esq.esq.esq.tbdret.getContent().get(index).toString() + "]");
+        }catch (NullPointerException e) {
+            System.out.print("nil]");
+        }
+        try {
+            System.out.print("[" + arrel.esq.esq.mig.tbesq.getContent().get(index).toString());
+        }catch (NullPointerException e) {
+            System.out.println("[nil.");
+        }
+
+        try {
+            System.out.print("." + arrel.esq.esq.mig.tbdret.getContent().get(index).toString() + "]");
+        }catch (NullPointerException e) {
+            System.out.print(".nil]");
+        }
+
+        try {
+            System.out.print("[" + arrel.esq.esq.dret.tbesq.getContent().get(index).toString());
+        }catch (NullPointerException e) {
+            System.out.print("[nil.");
+        }
+
+        try {
+            System.out.print("." + arrel.esq.esq.dret.tbdret.getContent().get(index).toString() + "]");
+        }catch (NullPointerException e) {
+            System.out.print("nil]");
+        }
+
+        try {
+            System.out.print("\t["+arrel.esq.mig.esq.tbesq.getContent().get(index).toString() + ".");
+        }catch (NullPointerException e) {
+            System.out.print("\t[nil.");
+        }
+
+        try {
+            System.out.print(arrel.esq.mig.esq.tbdret.getContent().get(index).toString() + "]");
+        }catch (NullPointerException e) {
+            System.out.print("nil]");
+        }
+
+        try {
+            System.out.print("["+arrel.esq.mig.mig.tbesq.getContent().get(index).toString() + ".");
+        }catch (NullPointerException e) {
+            System.out.print("[nil.");
+        }
+
+        try {
+            System.out.print(arrel.esq.mig.mig.tbdret.getContent().get(index).toString() + "]");
+        }catch (NullPointerException e) {
+            System.out.print("nil]");
+        }
+
+        try {
+            System.out.print("["+arrel.esq.mig.dret.tbesq.getContent().get(index).toString() + ".");
+        }catch (NullPointerException e) {
+            System.out.print("[nil.");
+        }
+
+        try {
+            System.out.print(arrel.esq.mig.dret.tbdret.getContent().get(index).toString() + "]");
+        }catch (NullPointerException e) {
+            System.out.print("nil]");
+        }
+
+
+        try {
+            System.out.print("\t["+arrel.esq.dret.esq.tbesq.getContent().get(index).toString() + ".");
+        }catch (NullPointerException e) {
+            System.out.print("\t[nil.");
+        }
+
+        try {
+            System.out.print(arrel.esq.dret.esq.tbdret.getContent().get(index).toString() + "]");
+        }catch (NullPointerException e) {
+            System.out.print("nil]");
+        }
+
+        try {
+            System.out.print("["+arrel.esq.dret.mig.tbesq.getContent().get(index).toString() + ".");
+        }catch (NullPointerException e) {
+            System.out.print("[nil.");
+        }
+
+        try {
+            System.out.print(arrel.esq.dret.mig.tbdret.getContent().get(index).toString() + "]");
+        }catch (NullPointerException e) {
+            System.out.print("nil]");
+        }
+
+        try {
+            System.out.print("["+arrel.esq.dret.dret.tbesq.getContent().get(index).toString() + ".");
+        }catch (NullPointerException e) {
+            System.out.print("[nil.");
+        }
+
+        try {
+            System.out.println(arrel.esq.dret.dret.tbdret.getContent().get(index).toString() + "]");
+        }catch (NullPointerException e) {
+            System.out.println("nil]");
+        }
+
+        System.out.println("");
+        System.out.println("");
+
+
+
+    }
+
+    public boolean afegir(TableRow hola){
+        return add(hola);
+    }
+
     public void testar() {
         test(arrel);
     }
+
     private void test(Node node) {
 
         if(node != null) {
 
-            System.out.println(node.tbesq.toString());
+            if (node.tbesq == null) {
+                System.out.println("null");
+            } else {
+                System.out.println(node.tbesq.toString());
+            }
             test(node.esq);
             test(node.mig);
 
@@ -393,7 +894,44 @@ public class Arbre extends TableDataStructure {
         }
     }
 
-
-
-
 }
+
+/*
+        esborrar ‘a’ d’una fulla
+
+cas 1
+	la fulla te 2 claus, borrem la que toque i les ordenem si cal
+cas 2
+		9.			->				7
+
+	4.7		‘a’.	->		4				9
+
+T1	T2	T3	Ta		->	T1		T2		T3		Ta
+
+	Si germa adjaçent de ‘a’ te 2 claus, aleshores el germa pasa 1 clau al pare i el
+	pare pasa la clau a on estava ‘a’, si el germa adjaçent nms te 1 clau pero el
+	germa més lluny en te dos, aleshores aquest pasa una clau al pare, el pare li
+	pasa al germa del mig i el del mig li torna l’altra clau al pare que aquest li dona
+	al fill on estava ‘a’
+cas 3
+	Cap germa te més d’una clau
+        Cas 1
+
+        		4.9				->				6
+
+	2			6		‘a’		->		2.4				9
+
+T1		T2	T3		T4	 T		->	T1	T2	T3		T4		T
+
+            Pare te 2 claus
+            Pare pasa una clau al germa que li falta, es desfa un fill i un
+            altre fill agafa una clau i esdeve 3-node els germans agafen els
+            arbres que tenia el germa desfet
+
+        Cas 2
+            l’unic cas recursiu
+	        El node esborrat només te un germa (pare 2-node), germa es 2-node.
+	        No podem solucionar el problema amb aquest nivell, així que unim el pare amb
+	        el germa no esborrat, aquest germa agafarà l’arbre del germa esborrat i
+	        pasarem el problema cap als nivells superiors
+	*/
