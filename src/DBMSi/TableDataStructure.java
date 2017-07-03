@@ -18,6 +18,7 @@ public abstract class TableDataStructure {
     protected String index;
 
 
+
     /**
      * @return El nom de l'índex.
      */
@@ -35,6 +36,8 @@ public abstract class TableDataStructure {
 
         this.index = field;
     }
+
+    protected abstract void showHistoric(String field, Object valor);
 
     /**
      * Afegeix una nova fila dins de l'estructura utilitzada per una taula.

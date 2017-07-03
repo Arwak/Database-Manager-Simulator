@@ -157,6 +157,9 @@ public class Table {
         return added;
     }
 
+    public void showHistoric (String field, Object value) {
+        dataStructure.showHistoric(field, value);
+    }
     /**
      * Afegeix una nova fila a la taula.
      *

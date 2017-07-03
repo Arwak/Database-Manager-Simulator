@@ -2,8 +2,6 @@ package AVL;
 
 import DBMSi.TableRow;
 
-import java.util.ArrayList;
-
 /**
  * Created by ClaudiaPeiro on 21/6/17
  *
@@ -28,10 +26,19 @@ public class NodeAVL {
 
     public NodeAVL(NodeAVL node) {
         this.root = node.getRoot();
-        balance = node.getBalance();
+        balance = 0;
         height = 0;
-        childRight = node.getChildRight();
-        childLeft = node.getChildLeft();
+        childRight = null;
+        childLeft = null;
+
+        if (node.getChildRight() != null) {
+            childRight = node.getChildRight();
+            node.getChildRight().setParent(this);
+        }
+        if (node.getChildLeft() != null) {
+            childLeft = node.getChildLeft();
+            node.getChildLeft().setParent(this);
+        }
         parent = null;
     }
 
@@ -113,4 +120,35 @@ public class NodeAVL {
     public void setBalance (int balance) {
         this.balance = balance;
     }
+
+    public String toString () {
+        StringBuilder sb = new StringBuilder();
+        sb.append(root.toString());
+        sb.append("Height: ").append(height);
+        sb.append(" Parent: ");
+        if (parent != null) {
+            sb.append(parent.getRoot().toString());
+        } else {
+            sb.append("-\t\t\t");
+        }
+        sb.append("Child Right: ");
+        if (childRight != null) {
+            sb.append(childRight.getRoot().toString());
+            sb.append("Height: ").append(childRight.getHeight()).append(" ");
+        } else {
+            sb.append("-\t\t\t");
+            sb.append("Height: 0 ");
+        }
+        sb.append("Child Left: ");
+        if (childLeft != null) {
+            sb.append(childLeft.getRoot().toString());
+            sb.append("Height: ").append(childLeft.getHeight()).append(" ");
+        } else {
+            sb.append("-\t\t\t");
+            sb.append("Height: 0 ");
+        }
+
+        return sb.toString();
+    }
+
 }

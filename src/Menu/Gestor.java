@@ -3,6 +3,7 @@ package Menu;
 import AVL.AVL;
 import Arbre23.Arbre;
 import DBMSi.*;
+import com.sun.tools.javac.util.Name;
 
 
 import java.util.*;
@@ -291,8 +292,9 @@ public class Gestor {
         Object which = DatabaseInput.readColumnValue(taulesGestor.get(what - 1).getColumnType(index), index);
 
         System.out.println(taulesGestor.get(what - 1).toString());
-        TableRowRestriction rest = addRestriction(which, index);
-        taulesGestor.get(what - 1).selectRows(rest);
+        taulesGestor.get(what - 1).showHistoric(index, which);
+        //TableRowRestriction rest = addRestriction(which, index);
+        //taulesGestor.get(what - 1).selectRows(rest);
 
     }
 

@@ -72,6 +72,12 @@ public class Arbre extends TableDataStructure {
     public boolean afegir(TableRow hola){
         return add(hola);
     }
+
+    @Override
+    protected void showHistoric(String field, Object valor) {
+
+    }
+
     @Override
     protected boolean add(TableRow tableRow) {
 
