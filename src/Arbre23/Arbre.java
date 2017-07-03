@@ -128,7 +128,8 @@ public class Arbre extends TableDataStructure {
 
     @Override
     protected boolean remove(String field, Object value) {
-        TableRow tb = (TableRow) value;
+        TableRow tb = new TableRow();
+        tb.addColumn(index, value);
         Node toDelete = buscarNode(tb, arrel);
 
         if (toDelete.tbesq.compareTo(index, tb) != 0 && (toDelete.tbdret == null || toDelete.tbdret.compareTo(index, tb) != 0)) {
