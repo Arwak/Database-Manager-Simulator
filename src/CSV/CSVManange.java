@@ -16,13 +16,14 @@ public class CSVManange {
     private static String columns;
     private static List<String> columnNames;
     private static String path = "/Users/ClaudiaPeiro/Desktop/prova.csv";
+    private static final String WHEREARECSV = "/Users/ClaudiaPeiro/Documents/LaSalle/segon/PAED/GitFinal/PAED-Practica2/CSV/";
     private static FileWriter w;
 
     private static final String SPLITBY = ";";
     private static final char COMMA = ',';
 
     public static void setPath (String pathEntered) {
-        path = pathEntered;
+        path = WHEREARECSV + pathEntered;
     }
 
     public static ArrayList<TableRow> readCSV (List<String> columnNoms, List<DataType> type) {
@@ -39,7 +40,7 @@ public class CSVManange {
 
             while ((line = br.readLine()) != null) {
                 // use comma as separator
-                String[] what = line.split(SPLITBY);
+                String[] what = line.split(String.valueOf(COMMA));
                 rows.add(creaTableRow(what));
             }
 
@@ -69,16 +70,14 @@ public class CSVManange {
     }
 
     public static void writeLines (ArrayList<HashMap> values, int howManyColumns) {
-        boolean first = true;
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < values.size(); i++) {
-            String column = columnNames.get(i);
+        for (HashMap value : values) {
             for (int a = 0; a < howManyColumns; a++) {
-                if (!first) {
+                String column = columnNames.get(a);
+                if (a > 0) {
                     sb.append(COMMA);
                 }
-                sb.append(values.get(i).get(column));
-                first = !first;
+                sb.append(value.get(column));
             }
             try {
                 sb.append("\n");
@@ -86,7 +85,6 @@ public class CSVManange {
             } catch (IOException e) {
                 System.err.println("Ups something went wrong! " + e.getMessage());
             }
-            System.out.println(sb.toString());
             sb.setLength(0);
         }
     }

@@ -4,6 +4,9 @@ import DBMSi.TableDataStructure;
 import DBMSi.TableRow;
 import DBMSi.TableRowRestriction;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
  * Taula d'adreçament tancat directa amb zona d'excedents dinamica
  * Created by xavierromacastells on 4/7/17.
@@ -91,7 +94,7 @@ public class TaulaHash extends TableDataStructure {
     }
 
     @Override
-    protected void select(TableRowRestriction restrictions) {
+    protected ArrayList<String> select(TableRowRestriction restrictions) {
         Node escombra;
         for (int i = 0; i < MIDA_TAULA_R; i++) {
             escombra = taula[i];
@@ -102,10 +105,11 @@ public class TaulaHash extends TableDataStructure {
             }
         }
 
+        return null;
     }
 
     @Override
-    protected void selectUnique(TableRowRestriction restriction, String column) {
+    protected String selectUnique(TableRowRestriction restriction, String column) {
         Node escombra;
         for (int i = 0; i < MIDA_TAULA_R; i++) {
             escombra = taula[i];
@@ -115,6 +119,12 @@ public class TaulaHash extends TableDataStructure {
                 escombra = escombra.seg;
             }
         }
+        return column;
+    }
+
+    @Override
+    protected ArrayList<HashMap> selectAllInformation(TableRowRestriction restriction) {
+        return null;
     }
 
     @Override

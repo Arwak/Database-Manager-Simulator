@@ -4,6 +4,9 @@ import DBMSi.TableDataStructure;
 import DBMSi.TableRow;
 import DBMSi.TableRowRestriction;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
  * Created by xavierromacastells on 4/7/17.
  */
@@ -47,17 +50,24 @@ public class TaulaHashI extends TableDataStructure {
     }
 
     @Override
-    protected void select(TableRowRestriction restrictions) {
+    protected ArrayList<String> select(TableRowRestriction restrictions) {
         for (int i = 0; i < MIDA_TAULA_R; i++) {
             taula[i].select(restrictions);
         }
+        return null;
     }
 
     @Override
-    protected void selectUnique(TableRowRestriction restriction, String column) {
+    protected String selectUnique(TableRowRestriction restriction, String column) {
         for (int i = 0; i < MIDA_TAULA_R; i++) {
             taula[i].selectUnique(restriction, column);
         }
+        return column;
+    }
+
+    @Override
+    protected ArrayList<HashMap> selectAllInformation(TableRowRestriction restriction) {
+        return null;
     }
 
     @Override
