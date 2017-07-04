@@ -10,11 +10,7 @@ import java.util.HashMap;
 /**
  * Created by xavierromacastells on 4/7/17.
  */
-public class TaulaHashI extends TableDataStructure {
-
-    private final static int MIDA_TAULA_R = 100;
-
-    private long size;
+public class TaulaHashI extends Taula {
 
     private Arbre taula[];
 
@@ -144,30 +140,6 @@ public class TaulaHashI extends TableDataStructure {
 
             return false;
         }
-    }
-
-    @Override
-    protected long size() {
-        return size;
-    }
-
-    private int hashString(String clau) {
-        int mida = clau.length();
-        int suma = 0;
-
-        clau = clau.toLowerCase();
-
-        for (int i = 0; i < mida; i++) {
-
-            suma+= (clau.charAt(i) - 'a');
-
-        }
-
-        return suma % MIDA_TAULA_R;
-    }
-
-    private int hashInt(int clau) {
-        return clau % MIDA_TAULA_R;
     }
 
     public static String getName() {

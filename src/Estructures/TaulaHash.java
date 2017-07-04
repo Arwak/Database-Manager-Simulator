@@ -11,11 +11,7 @@ import java.util.HashMap;
  * Taula d'adreçament tancat directa amb zona d'excedents dinamica
  * Created by xavierromacastells on 4/7/17.
  */
-public class TaulaHash extends TableDataStructure {
-
-    private final static int MIDA_TAULA_R = 100;
-
-    private long size;
+public class TaulaHash extends Taula {
 
     private Node taula[];
 
@@ -41,7 +37,7 @@ public class TaulaHash extends TableDataStructure {
 
     public TaulaHash(String index) {
         taula = new Node[MIDA_TAULA_R];
-        size = 0;
+        super.size = 0;
         super.setIndex(index);
 
         for (int i = 0; i < MIDA_TAULA_R; i++){
@@ -254,30 +250,6 @@ public class TaulaHash extends TableDataStructure {
         }
 
         return false;
-    }
-
-    @Override
-    protected long size() {
-        return 0;
-    }
-
-    private int hashString(String clau) {
-        int mida = clau.length();
-        int suma = 0;
-
-        clau = clau.toLowerCase();
-
-        for (int i = 0; i < mida; i++) {
-
-            suma+= (clau.charAt(i) - 'a');
-
-        }
-
-        return suma % MIDA_TAULA_R;
-    }
-
-    private int hashInt(int clau) {
-        return clau % MIDA_TAULA_R;
     }
 
     public static String getName() {
