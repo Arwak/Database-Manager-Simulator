@@ -834,44 +834,38 @@ public class Arbre extends TableDataStructure {
         }
     }
 
-    private void inOrder (Node actual, ArrayList<HashMap> ordre) {
+    private void inOrder(Node actual, ArrayList<HashMap> ordre) {
 
         if (actual != null) {
 
-            if (actual.esq != null) {
-                //while actual is not a leaf
+            if (actual.esq == null) {
+                //is leaf
+
+                ordre.add(actual.tbesq.getContent());
+
+                if (actual.tbdret != null)
+                    ordre.add(actual.tbdret.getContent());
+
+            } else if (actual.tbdret == null) {
+                //2-node
 
                 inOrder(actual.esq, ordre);
                 ordre.add(actual.tbesq.getContent());
                 inOrder(actual.mig, ordre);
 
-                if (actual.tbdret != null) {
-                    //actual has a right key
-
-                    if(actual.esq != null) {
-                        //if actual is not a leaf
-
-                        ordre.add(actual.tbdret.getContent());
-
-                    }
-
-                    inOrder(actual.dret, ordre);
-
-                }
-
-
             } else {
-                //actual is a leaf, time to get the content
+                //3-node
 
+                inOrder(actual.esq, ordre);
                 ordre.add(actual.tbesq.getContent());
-
-                if (actual.tbdret != null)
-
-                    ordre.add(actual.tbdret.getContent());
+                inOrder(actual.mig, ordre);
+                ordre.add(actual.tbdret.getContent());
+                inOrder(actual.dret, ordre);
 
             }
         }
     }
+
 
 
 }
