@@ -57,8 +57,18 @@ public abstract class Taula extends TableDataStructure {
         return suma % MIDA_TAULA_R;
     }
 
+
     protected int hashInt(int clau) {
         return clau % MIDA_TAULA_R;
+    }
+
+    protected long DJBHash(String clau) {
+        long hash = 5381;
+        int size = clau.length();
+        for (int i = 0; i < size; i++) {
+            hash = ((hash << 5) + hash) + clau.charAt(i);
+        }
+        return hash;
     }
 
 }
