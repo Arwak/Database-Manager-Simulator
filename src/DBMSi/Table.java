@@ -1,7 +1,5 @@
 package DBMSi;
 
-import Arbre23.Arbre;
-
 import java.util.*;
 
 /**

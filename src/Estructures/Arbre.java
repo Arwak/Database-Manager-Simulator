@@ -1,4 +1,4 @@
-package Arbre23;
+package Estructures;
 
 import DBMSi.TableDataStructure;
 import DBMSi.TableRow;
@@ -10,7 +10,6 @@ import java.util.ArrayList;
  * Created by Xavier Roma on 22/6/17.
  */
 public class Arbre extends TableDataStructure {
-    private final static String EMPTY_VALUE = "GAYNS Ϲ(^.^)Ↄ ";
     private Node arrel;
     private long size;
     private ArrayList<TableRow> historic;
@@ -150,7 +149,7 @@ public class Arbre extends TableDataStructure {
 
     private void buscarSelect(Node node, TableRowRestriction rest) {
 
-        if(node != null) {
+        if(node != null && node.tbesq != null) {
 
             if (rest.test(node.tbesq)) {
                 System.out.println(node.tbesq.toString());

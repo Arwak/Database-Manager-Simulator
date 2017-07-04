@@ -1,7 +1,6 @@
 package Menu;
 
-import AVL.AVL;
-import Arbre23.Arbre;
+import Estructures.*;
 import DBMSi.*;
 
 
@@ -138,6 +137,8 @@ public class Gestor {
             System.out.println(AVL.getName());
             System.out.print(" 2. ");
             System.out.println(Arbre.getName());
+            System.out.print(" 3. ");
+            System.out.println(TaulaHash.getName());
             try {
                 estructura = sc.nextInt();
             } catch (java.util.InputMismatchException e) {
@@ -146,7 +147,7 @@ public class Gestor {
                 System.out.println("");
 
             }
-        } while (estructura < 1 || 2 < estructura);
+        } while (estructura < 1 || 3 < estructura);
 
         do {
             System.out.print("\nEnter a name for the table: ");
@@ -172,7 +173,10 @@ public class Gestor {
             case 2:
                 table = new Table(taula, new Arbre(columna));
                 addColumnToTable(table, columna, dataType);
-                //TODO Clups confirma'm si això està bé
+                break;
+            case 3:
+                table = new Table(taula, new TaulaHashI(columna));
+                addColumnToTable(table, columna, dataType);
                 break;
         }
 

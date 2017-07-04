@@ -1,4 +1,4 @@
-package AVL;
+package Estructures;
 
 import DBMSi.TableDataStructure;
 import DBMSi.TableRow;
@@ -177,7 +177,7 @@ public class AVL extends TableDataStructure {
     private int heightLeft (NodeAVL actual) {
         int i = 0;
         if (actual.getChildLeft() != null) {
-           i = actual.getChildLeft().getHeight() + 1;
+            i = actual.getChildLeft().getHeight() + 1;
         }
         return i;
     }
@@ -201,7 +201,7 @@ public class AVL extends TableDataStructure {
         movimentLL(actual, true);
     }
 
-   private void movimentRR (NodeAVL actual, Boolean balanceig) {
+    private void movimentRR (NodeAVL actual, Boolean balanceig) {
         //System.out.println("Toca moviment RR! De: " + actual.getRoot().toString());
 
         NodeAVL row = new NodeAVL(actual);
@@ -227,17 +227,17 @@ public class AVL extends TableDataStructure {
             recolocate(actual.getChildLeft(), childLeft);
         }
 
-       if (childLeft == null && actual.getChildRight() != null) {
-           reCalculHeigh(actual.getChildRight());
-       }
-       reCalculHeigh(actual.getChildLeft());
+        if (childLeft == null && actual.getChildRight() != null) {
+            reCalculHeigh(actual.getChildRight());
+        }
+        reCalculHeigh(actual.getChildLeft());
 
         if (balanceig) {
             calculHeight(actual.getChildRight(), false);
             calculHeight(actual.getChildLeft(), false);
             calculHeight(actual, false);
         }
-   }
+    }
 
     private void movimentLL (NodeAVL actual, Boolean balanceig) {
         //System.out.println("Toca moviment LL! De: " + actual.getRoot().toString());
@@ -301,7 +301,7 @@ public class AVL extends TableDataStructure {
         if (restriction.test(actual.getRoot())) {
             System.out.println(actual.toString());
 
-                //System.out.println(actual.getRoot().toString());
+            //System.out.println(actual.getRoot().toString());
 
 
         }
