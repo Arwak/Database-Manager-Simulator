@@ -531,10 +531,12 @@ public class Gestor {
      * Gestiona la setena opció del submenu de create table
      */
     private static void gestioSetenaMenu2(){
+        System.out.println("Genereting CSV file for table " + taulaTractant.getName() + " ...");
         ArrayList<HashMap> values = taulaTractant.selectOnlyColumns(new TableRowRestriction());
         CSVManange.prepareFileToExport(taulaTractant.getName());
         CSVManange.writeLines(values, taulaTractant.getColumnNames().size());
         CSVManange.endFileToExport();
+        System.out.println(taulaTractant.getName() + ".csv file generated successfully with a total of " + taulaTractant.getRowsNumber() + " rows.");
     }
 
 
