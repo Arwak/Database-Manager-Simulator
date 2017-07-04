@@ -87,7 +87,7 @@ public class Arbre extends TableDataStructure {
             //tree is empty
 
             arrel.tbesq = tableRow;
-
+            size++;
             return true;
 
         } else {
@@ -169,7 +169,7 @@ public class Arbre extends TableDataStructure {
         }
 
         deleteLeaf(tb, toDelete);
-
+        size--;
         return true;
     }
 
