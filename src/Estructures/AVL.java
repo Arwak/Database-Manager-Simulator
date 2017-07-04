@@ -320,11 +320,8 @@ public class AVL extends TableDataStructure {
             return what;
         }
         if (restriction.test(actual.getRoot())) {
-
-                what.add(actual.toString());
-
-
-                //System.out.println(actual.getRoot().toString());
+            what.add(actual.toString());
+            //System.out.println(actual.getRoot().toString());
         }
 
         whatToShow(actual.getChildLeft(), restriction, what);
@@ -351,9 +348,9 @@ public class AVL extends TableDataStructure {
     }
 
     private String whatToShowUnique (NodeAVL actual, TableRowRestriction restriction, String column) {
-        String what = null;
+        String what;
         if(actual == null) {
-            return what;
+            return null;
         }
         if (restriction.test(actual.getRoot())) {
             what = actual.getRoot().getContent().get(column).toString();

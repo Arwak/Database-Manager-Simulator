@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Taula d'adreçament tancat directa amb zona d'excedents dinamica
+ * Taula d'adreçament tancat directa amb zona d'excedents dinàmica
  * Created by xavierromacastells on 4/7/17.
  */
 public class TaulaHash extends TableDataStructure {
@@ -200,6 +200,15 @@ public class TaulaHash extends TableDataStructure {
             suma+= (clau.charAt(i) - 'a');
         }
         return suma % MIDA_TAULA_R;
+    }
+
+    private long DJBHash (String clau) {
+        long hash = 5381;
+        int mida = clau.length();
+        for(int i = 0; i < mida; i++) {
+            hash = ((hash << 5) + hash) + clau.charAt(i);
+        }
+        return hash;
     }
 
     private int hashInt(int clau) {

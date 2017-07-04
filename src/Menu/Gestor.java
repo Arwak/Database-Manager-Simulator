@@ -138,6 +138,10 @@ public class Gestor {
             System.out.println(AVL.getName());
             System.out.print(" 2. ");
             System.out.println(Arbre.getName());
+            System.out.print(" 3. ");
+            System.out.println(TaulaHash.getName());
+            System.out.print(" 4. ");
+            System.out.println(TaulaHashI.getName());
             try {
                 estructura = sc.nextInt();
             } catch (java.util.InputMismatchException e) {
@@ -146,7 +150,7 @@ public class Gestor {
                 System.out.println("");
 
             }
-        } while (estructura < 1 || 2 < estructura);
+        } while (estructura < 1 || 4 < estructura);
 
         do {
             System.out.print("\nEnter a name for the table: ");
@@ -167,7 +171,6 @@ public class Gestor {
             case 1:
                 table = new Table(taula, new AVL(columna, null));
                 addColumnToTable(table, columna, dataType);
-
                 break;
             case 2:
                 table = new Table(taula, new Arbre(columna));
@@ -563,7 +566,16 @@ public class Gestor {
                 if (taulesGestor.get(i).getDataStructure() instanceof AVL) {
                     estructura = 1;
                 } else {
-                    estructura = 2;
+                    if (taulesGestor.get(i).getDataStructure() instanceof Arbre) {
+                        estructura = 2;
+                    } else {
+                        if (taulesGestor.get(i).getDataStructure() instanceof TaulaHash) {
+                            estructura = 3;
+                        } else {
+                            estructura = 4;
+                        }
+                    }
+
                 }
                 return i;
             }

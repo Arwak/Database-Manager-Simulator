@@ -40,7 +40,7 @@ public class CSVManange {
 
             while ((line = br.readLine()) != null) {
                 // use comma as separator
-                String[] what = line.split(String.valueOf(COMMA));
+                String[] what = line.split(String.valueOf(SPLITBY));
                 rows.add(creaTableRow(what));
             }
 
