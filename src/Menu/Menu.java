@@ -60,6 +60,7 @@ public class Menu {
      * Procediment que imprimeix el menu principal per consola
      */
     private void printMenu() {
+        System.out.println("\n");
         System.out.println("1. Create table");
         System.out.println("2. Manage table");
         System.out.println("3. Visualize tables");
@@ -72,6 +73,7 @@ public class Menu {
      * Procediment que imprimeix el menu secundari per consola
      */
     private void printMenuSecundari() {
+        System.out.println("\n");
         System.out.println("\t1. Insert");
         System.out.println("\t2. Show row by index");
         System.out.println("\t3. Select");

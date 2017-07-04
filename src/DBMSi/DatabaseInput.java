@@ -212,4 +212,10 @@ public class DatabaseInput {
         scanner.nextLine();
         return table;
     }
+
+    public static String askForCSVFile() {
+        System.out.print("Enter the name of the CSV file:");
+        String file = scanner.nextLine();
+        return file;
+    }
 }

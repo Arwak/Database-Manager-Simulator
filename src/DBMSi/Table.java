@@ -177,6 +177,10 @@ public class Table {
         return dataStructure.add(row);
     }
 
+    public ArrayList<HashMap> selectOnlyColumns (TableRowRestriction restriction) {
+        return dataStructure.selectAllInformation(restriction);
+    }
+
     /**
      * Visualitza totes les files de la taula o bé aquelles que passin les restriccions
      * si és que hi ha.
@@ -184,9 +188,9 @@ public class Table {
      * @param restrictions Les restriccions a aplicar en la visualització de les files.
      *
      */
-    public void selectRows(TableRowRestriction restrictions) {
+    public ArrayList<String> selectRows(TableRowRestriction restrictions) {
 
-        dataStructure.select(restrictions);
+        return dataStructure.select(restrictions);
     }
 
 
@@ -195,9 +199,9 @@ public class Table {
      * @param restrictions Les restriccions a aplicar en la visualització de les files.
      * @param column columna a mostrar.
      */
-    public void selectUnique(TableRowRestriction restrictions, String column) {
+    public String selectUnique(TableRowRestriction restrictions, String column) {
 
-        dataStructure.selectUnique(restrictions, column);
+        return dataStructure.selectUnique(restrictions, column);
     }
 
     public boolean updateRow(TableRow row) {

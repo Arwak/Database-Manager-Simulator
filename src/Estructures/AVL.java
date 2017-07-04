@@ -1,4 +1,4 @@
-package Estructures;
+package AVL;
 
 import DBMSi.TableDataStructure;
 import DBMSi.TableRow;
@@ -12,23 +12,25 @@ import java.util.*;
 public class AVL extends TableDataStructure {
     private NodeAVL root;
     private long size;
-    private ArrayList<NodeAVL> historic;
+    private ArrayList<TableRow> historic;
 
 
     public AVL( String index, NodeAVL node) {
         root = node;
         size = 0;
-        historic = new ArrayList<NodeAVL>();
+        historic = new ArrayList<>();
         super.setIndex(index);
     }
 
     @Override
     protected void showHistoric(String field, Object valor) {
-        for (int i = 0; i < historic.size(); i++) {
-            if (historic.get(i).getRoot().compareTo(field, valor) == 0) {
-                System.out.println(historic.get(i).getRoot().toString());
+
+        for (TableRow aHistoric : historic) {
+            if (aHistoric.compareTo(field, valor) == 0) {
+                System.out.println(aHistoric.toString());
             }
         }
+        System.out.println("\n\n");
     }
 
     @Override
@@ -38,15 +40,20 @@ public class AVL extends TableDataStructure {
     }
 
     @Override
-    protected void select(TableRowRestriction restrictions) {
-        whatToShow(root, restrictions);
-
-
+    protected ArrayList<String> select(TableRowRestriction restrictions) {
+        ArrayList<String> what = new ArrayList<>();
+        return whatToShow(root, restrictions, what);
     }
 
     @Override
-    protected void selectUnique(TableRowRestriction restriction, String column) {
-        whatToShowUnique(root, restriction, column);
+    protected String selectUnique(TableRowRestriction restriction, String column) {
+        return whatToShowUnique(root, restriction, column);
+    }
+
+    @Override
+    protected ArrayList<HashMap> selectAllInformation(TableRowRestriction restriction) {
+        ArrayList<HashMap> what = new ArrayList<>();
+        return whatToContent(root, restriction, what);
     }
 
     @Override
@@ -72,6 +79,7 @@ public class AVL extends TableDataStructure {
     private void whereToPlace(NodeAVL actual, TableRow tableRow) {
         if(actual == null){
             root = new NodeAVL(tableRow);
+            historic.add(tableRow);
             size++;
             return;
         }
@@ -82,23 +90,25 @@ public class AVL extends TableDataStructure {
                 //Element duplicat no fer res
                 System.out.println("Element duplicat!");
             } else {
-                if(actual.isChildRight()){
+                if(actual.getChildRight() != null){
                     whereToPlace(actual.getChildRight(), tableRow);
                 } else {
                     size++;
                     actual.setChildRight(new NodeAVL(tableRow));
                     actual.getChildRight().setParent(actual);
+                    historic.add(tableRow);
                     reCalculHeigh(actual);
                     calculHeight(actual, true);
                 }
             }
         } else {
-            if(actual.isChildLeft()){
+            if(actual.getChildLeft() != null){
                 whereToPlace(actual.getChildLeft(), tableRow);
             } else {
                 size++;
                 actual.setChildLeft(new NodeAVL(tableRow));
                 actual.getChildLeft().setParent(actual);
+                historic.add(tableRow);
                 reCalculHeigh(actual);
                 calculHeight(actual, true);
 
@@ -177,7 +187,7 @@ public class AVL extends TableDataStructure {
     private int heightLeft (NodeAVL actual) {
         int i = 0;
         if (actual.getChildLeft() != null) {
-            i = actual.getChildLeft().getHeight() + 1;
+           i = actual.getChildLeft().getHeight() + 1;
         }
         return i;
     }
@@ -189,7 +199,6 @@ public class AVL extends TableDataStructure {
         }
         return i;
     }
-
 
     private void movimentRL (NodeAVL actual) {
         movimentLL(actual.getChildRight(), false);
@@ -208,6 +217,11 @@ public class AVL extends TableDataStructure {
         NodeAVL pare = actual.getParent();
 
         actual = actual.getChildRight();
+        if (pare == null) {
+            actual.setParent(null);
+        } else {
+
+        }
         actual.setParent(pare);
 
         NodeAVL childLeft = null;
@@ -227,17 +241,17 @@ public class AVL extends TableDataStructure {
             recolocate(actual.getChildLeft(), childLeft);
         }
 
-        if (childLeft == null && actual.getChildRight() != null) {
-            reCalculHeigh(actual.getChildRight());
-        }
-        reCalculHeigh(actual.getChildLeft());
+       if (childLeft == null && actual.getChildRight() != null) {
+           reCalculHeigh(actual.getChildRight());
+       }
+       reCalculHeigh(actual.getChildLeft());
 
         if (balanceig) {
             calculHeight(actual.getChildRight(), false);
             calculHeight(actual.getChildLeft(), false);
             calculHeight(actual, false);
         }
-    }
+   }
 
     private void movimentLL (NodeAVL actual, Boolean balanceig) {
         //System.out.println("Toca moviment LL! De: " + actual.getRoot().toString());
@@ -246,6 +260,12 @@ public class AVL extends TableDataStructure {
         NodeAVL pare = actual.getParent();
 
         actual = actual.getChildLeft();
+
+        if (pare == null) {
+            actual.setParent(null);
+        } else {
+
+        }
         actual.setParent(pare);
 
         NodeAVL childRight = null;
@@ -294,77 +314,102 @@ public class AVL extends TableDataStructure {
      * @param actual node actual que sesta buscant
      * @param restriction restricció segons la que s'esta buscant
      */
-    private void whatToShow (NodeAVL actual, TableRowRestriction restriction) {
+    private ArrayList<String> whatToShow (NodeAVL actual, TableRowRestriction restriction, ArrayList<String> what) {
         if(actual == null) {
-            return;
+            return what;
         }
         if (restriction.test(actual.getRoot())) {
-            System.out.println(actual.toString());
 
-            //System.out.println(actual.getRoot().toString());
+                what.add(actual.toString());
 
 
+                //System.out.println(actual.getRoot().toString());
         }
 
-        whatToShow(actual.getChildLeft(), restriction);
-        whatToShow(actual.getChildRight(), restriction);
+        whatToShow(actual.getChildLeft(), restriction, what);
+        whatToShow(actual.getChildRight(), restriction, what);
+
+        return what;
 
     }
 
-    private void whatToShowUnique (NodeAVL actual, TableRowRestriction restriction, String column) {
+    private ArrayList<HashMap> whatToContent (NodeAVL actual, TableRowRestriction restriction, ArrayList<HashMap> what) {
         if(actual == null) {
-            return;
+            return what;
+        }
+        if (restriction.test(actual.getRoot())) {
+            what.add(actual.getRoot().getContent());
+
+        }
+
+        whatToContent(actual.getChildLeft(), restriction, what);
+        whatToContent(actual.getChildRight(), restriction, what);
+
+        return what;
+
+    }
+
+    private String whatToShowUnique (NodeAVL actual, TableRowRestriction restriction, String column) {
+        if(actual == null) {
+            return null;
         }
         if (restriction.test(actual.getRoot())) {
             System.out.print(actual.getRoot().getContent().get(column).toString());
+            return actual.getRoot().getContent().get(column).toString();
         }
         whatToShowUnique(actual.getChildLeft(), restriction, column);
         whatToShowUnique(actual.getChildRight(), restriction, column);
+        return null;
     }
 
     private Boolean whatToModify (NodeAVL actual, TableRow tableRow, String field) {
         Boolean problems = false;
         if(actual == null){
-            problems = true;
-            System.out.println("peto aqui1");
             System.out.println("Element not found!");
-            return !problems;
+            return false;
         }
         int where = actual.getRoot().compareTo(field, tableRow);
-        if(where < 1){
-            if(where == 0) {
-                historic.add(actual);
-                TableRow updatedRow = getUpdated(actual, tableRow);
-                actual.setRoot(updatedRow);
-                historic.add(actual);
-                problems = false;
-            } else {
-                if(actual.getChildRight() != null){
-                    whatToModify(actual.getChildRight(), tableRow, field);
-                } else {
-                    System.out.println("peto aqui 3");
-                    problems = true;
-                }
+
+        while (where != 0) {
+           if (where < 1) {
+               if (actual.getChildRight() != null) {
+                   actual = actual.getChildRight();
+               } else {
+                   problems = true;
+               }
+           } else {
+               if (actual.getChildLeft() != null) {
+                   actual = actual.getChildLeft();
+               } else {
+                   problems = true;
+               }
+           }
+           where = actual.getRoot().compareTo(field, tableRow);
+        }
+
+        if (!problems) {
+            TableRow updatedRow = getUpdated(actual, tableRow);
+            actual.setRoot(updatedRow);
+            historic.add(actual.getRoot());
+
+            for (TableRow aHistoric : historic) {
+                System.out.println(aHistoric.toString());
             }
+
+            return true;
         } else {
-            if(actual.getChildLeft() != null){
-                whatToModify(actual.getChildLeft(), tableRow, field);
-            } else {
-                System.out.println("peto aqui 2");
-                problems = true;
-            }
-
-        }
-
-        if (problems) {
             System.out.println("Element not found!");
+            return false;
         }
-        return !problems;
 
     }
 
     private void whatToDelete (NodeAVL actual, String field, Object value, Boolean right) {
         if(actual == null){
+            return;
+        }
+        if (actual.equals(root) && root.getChildLeft() == null && root.getChildRight() == null) {
+            root = null;
             return;
         }
 
@@ -390,9 +435,9 @@ public class AVL extends TableDataStructure {
                         if (actual.getParent() != null) {
                             actualitzaCalculBalanceig(right, actual.getParent().getChildRight(), actual.getParent().getChildLeft());
                         } else {
-                            reCalculHeigh(actual);
+                            reCalculHeigh(actual.getChildLeft());
                             size--;
-                            calculHeight(actual, true);
+                            calculHeight(actual.getChildLeft(), true);
                         }
 
                     } else {
@@ -440,7 +485,10 @@ public class AVL extends TableDataStructure {
                     childLeft.getParent().setChildRight(null);
                 } else {
                     childLeft.getParent().setChildRight(null);
-                    movimentRR(childLeft.getParent(), true);
+                    if (root.getChildRight() != null) {
+                        reCalculHeigh(root.getChildRight());
+                        calculHeight(root.getChildRight(), true);
+                    }
                 }
 
             } else {
@@ -448,7 +496,10 @@ public class AVL extends TableDataStructure {
                     childLeft.getParent().setChildLeft(childLeft.getChildLeft());
                 } else {
                     childLeft.getParent().setChildLeft(null);
-                    movimentLL(childLeft.getParent(), true);
+                    if (root.getChildLeft() != null) {
+                        reCalculHeigh(root.getChildLeft());
+                        calculHeight(root.getChildLeft(), true);
+                    }
                 }
 
             }

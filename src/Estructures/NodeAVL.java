@@ -39,6 +39,7 @@ public class NodeAVL {
             childLeft = node.getChildLeft();
             node.getChildLeft().setParent(this);
         }
+
         parent = null;
     }
 
@@ -73,38 +74,6 @@ public class NodeAVL {
 
     public void setParent (NodeAVL parent) { this.parent = parent; }
 
-    /**
-     * Mètode que servirà per saber si té fill esquerra
-     * @return cert en cas que en tingui
-     */
-    public boolean isChildLeft() {
-        return childLeft != null;
-    }
-
-    /**
-     * Mètode que servirà per saber si té fill dret
-     * @return cert en cas que en tingui
-     */
-    public boolean isChildRight() {
-        return childRight != null;
-    }
-
-    public void setExistanceChildLeft() {
-        childLeft = null;
-    }
-
-    public void setExistanceChildRight() {
-        childRight = null;
-    }
-
-    /*public void updateHeight() {
-        if (getParent() != null) {
-            height = getParent().getHeight() + 1;
-        } else {
-            height = 0;
-        }
-    }*/
-
     public int getHeight () {
         return height;
     }
@@ -113,14 +82,11 @@ public class NodeAVL {
         this.height = height;
     }
 
-    public int getBalance () {
-        return balance;
-    }
-
     public void setBalance (int balance) {
         this.balance = balance;
     }
 
+    @Override
     public String toString () {
         StringBuilder sb = new StringBuilder();
         sb.append(root.toString());

@@ -1,5 +1,8 @@
 package DBMSi;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
  * Created by Albertpv on 15/01/17.
  *
@@ -53,7 +56,7 @@ public abstract class TableDataStructure {
      *
      * @param restrictions  Restriccions per tal de filtrar files en la visualització.
      */
-    protected abstract void select(TableRowRestriction restrictions);
+    protected abstract ArrayList<String> select(TableRowRestriction restrictions);
 
     /**
      * Visualitza el contingut de l'estructura de dades.
@@ -61,8 +64,9 @@ public abstract class TableDataStructure {
      * @param restriction Restriccions per tal de filtrar files en la visualització.
      * @param column Restriccions per tal de filtrar tant sols el valor d'una columna en la visualització.
      */
-    protected abstract void selectUnique(TableRowRestriction restriction, String column);
+    protected abstract String selectUnique(TableRowRestriction restriction, String column);
 
+    protected abstract ArrayList<HashMap> selectAllInformation (TableRowRestriction restriction);
     /**
      * Permet actualitzar una fila de l'estructura de dades.
      *

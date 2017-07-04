@@ -5,6 +5,7 @@ import DBMSi.TableRow;
 import DBMSi.TableRowRestriction;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Xavier Roma on 22/6/17.
@@ -101,13 +102,20 @@ public class Arbre extends TableDataStructure {
     }
 
     @Override
-    protected void select(TableRowRestriction restrictions) {
+    protected ArrayList<String> select(TableRowRestriction restrictions) {
         buscarSelect(arrel, restrictions);
+        return null;
     }
 
     @Override
-    protected void selectUnique(TableRowRestriction restriction, String column) {
+    protected String selectUnique(TableRowRestriction restriction, String column) {
         buscarUnique(arrel, restriction, column);
+        return null;
+    }
+
+    @Override
+    protected ArrayList<HashMap> selectAllInformation(TableRowRestriction restriction) {
+        return null;
     }
 
     @Override

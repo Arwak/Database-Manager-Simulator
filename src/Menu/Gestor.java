@@ -1,6 +1,7 @@
 package Menu;
 
 import Estructures.*;
+import CSV.CSVManange;
 import DBMSi.*;
 
 
@@ -137,10 +138,6 @@ public class Gestor {
             System.out.println(AVL.getName());
             System.out.print(" 2. ");
             System.out.println(Arbre.getName());
-            System.out.print(" 3. ");
-            System.out.println(TaulaHashI.getName());
-            System.out.print(" 4. ");
-            System.out.println(TaulaHash.getName());
             try {
                 estructura = sc.nextInt();
             } catch (java.util.InputMismatchException e) {
@@ -149,7 +146,7 @@ public class Gestor {
                 System.out.println("");
 
             }
-        } while (estructura < 1 || 4 < estructura);
+        } while (estructura < 1 || 2 < estructura);
 
         do {
             System.out.print("\nEnter a name for the table: ");
@@ -304,8 +301,6 @@ public class Gestor {
 
         System.out.println(taulesGestor.get(what - 1).toString());
         taulesGestor.get(what - 1).showHistoric(index, which);
-        //TableRowRestriction rest = addRestriction(which, index);
-        //taulesGestor.get(what - 1).selectRows(rest);
 
     }
 
@@ -359,7 +354,10 @@ public class Gestor {
             }
             System.out.println("");
             System.out.println("----------------------------------");
-            taulesGestor.get(whereIsTheTable).selectRows(restriction);
+            ArrayList<String> whatToShow = taulesGestor.get(whereIsTheTable).selectRows(restriction);
+            for (String aWhatToShow : whatToShow) {
+                System.out.println(aWhatToShow);
+            }
         } catch (NumberFormatException e) {
             System.err.println("Wrong type of data");
         }
@@ -399,12 +397,18 @@ public class Gestor {
     private static void gestioSegonaMenu3() {
         System.out.println(taulaTractant.toString());
         if (restriction.size() < 1) {
-            taulaTractant.selectRows(new TableRowRestriction());
+            ArrayList<String> whatToShow = taulaTractant.selectRows(new TableRowRestriction());
+            for (String aWhatToShow : whatToShow) {
+                System.out.println(aWhatToShow);
+            }
 
         } else {
-            int tamany = restriction.size();
-            for (int i = 0; i < tamany; i++) {
-                taulaTractant.selectRows(restriction.get(i));
+            for (TableRowRestriction aRestriction : restriction) {
+                ArrayList<String> whatToShow = taulaTractant.selectRows(aRestriction);
+                for (String aWhatToShow : whatToShow) {
+                    System.out.println(aWhatToShow);
+                }
+
             }
         }
 
@@ -437,8 +441,15 @@ public class Gestor {
                 if (column.equals(index)) {
                     continue;
                 }
-                System.out.print("Do you want to modify the column '" + column + "' with ");
-                taulaTractant.selectUnique(restriction, column);
+
+
+                String valor = taulaTractant.selectUnique(restriction, column);
+
+                if (valor == null) {
+                    problem = true;
+                    break;
+                }
+                System.out.print("Do you want to modify the column '" + column + "' with " + valor);
                 System.out.println(" value? [Y/N]");
                 String answer = DatabaseInput.askYesNo();
                 if (answer.equals("Y")) {
@@ -447,8 +458,13 @@ public class Gestor {
                 }
             }
 
-            if (taulesGestor.get(whereIsTheTable).updateRow(row) && taulaTractant.updateRow(row)) {
-                System.out.println("Row modified. Updating table " + taulaTractant.getName() + " with the changes done.");
+            if (!problem) {
+                if (taulesGestor.get(whereIsTheTable).updateRow(row)) {
+                    taulaTractant = taulesGestor.get(whereIsTheTable);
+                    System.out.println("Row modified. Updating table " + taulaTractant.getName() + " with the changes done.");
+                }
+            } else {
+                System.err.println("The value you entered is not in the tree sorry!");
             }
 
 
@@ -464,12 +480,22 @@ public class Gestor {
      */
     private static void gestioCinquenaMenu2(){
         String index = taulaTractant.getIndex();
-        System.out.println(taulaTractant.toString());
+
         try {
             Object what = DatabaseInput.readColumnValue(taulaTractant.getColumnType(index), index);
             TableRowRestriction restriction = new TableRowRestriction();
             restriction.addRestriction(index, what, TableRowRestriction.RESTRICTION_EQUALS);
-            taulaTractant.selectRows(restriction);
+            ArrayList<String> whatToShow = taulaTractant.selectRows(restriction);
+            if (whatToShow.size() == 0) {
+                System.err.println("The value you entered is not in the tree sorry!");
+                return;
+            }
+
+            System.out.println(taulaTractant.toString());
+            for (String aWhatToShow : whatToShow) {
+                System.out.println(aWhatToShow);
+            }
+
             System.out.println("Are you sure you want to delete this row [Y/N]");
             String answer = DatabaseInput.askYesNo();
             if (answer.equals("Y")) {
@@ -487,7 +513,16 @@ public class Gestor {
      * Gestiona la Sisena opció del submenu de create table
      */
     private static void gestioSisenaMenu2(){
-
+        System.out.println("--- CSV Import for table " + taulaTractant.getName() + " ---");
+        String file = DatabaseInput.askForCSVFile();
+        CSVManange.setPath(file);
+        System.out.println("Loading file data...");
+        ArrayList<TableRow> whatToInsert = CSVManange.readCSV(taulaTractant.getColumnNames(), taulaTractant.getColumnTypes());
+        for (TableRow aWhatToInsert : whatToInsert) {
+            taulaTractant.addRow(aWhatToInsert);
+        }
+        System.out.println("Data loaded successfully. A total of " + taulaTractant.getRowsNumber() + " new rows have been inserted" +
+        " into " + taulaTractant.getName() + ".");
     }
 
 
@@ -495,7 +530,10 @@ public class Gestor {
      * Gestiona la setena opció del submenu de create table
      */
     private static void gestioSetenaMenu2(){
-
+        ArrayList<HashMap> values = taulaTractant.selectOnlyColumns(new TableRowRestriction());
+        CSVManange.prepareFileToExport(taulaTractant.getName());
+        CSVManange.writeLines(values, taulaTractant.getColumnNames().size());
+        CSVManange.endFileToExport();
     }
 
 
