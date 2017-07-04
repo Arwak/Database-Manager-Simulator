@@ -22,7 +22,9 @@ public class TaulaHashI extends TableDataStructure {
         taula = new Arbre[MIDA_TAULA_R];
         size = 0;
         super.setIndex(index);
+
         for (int i = 0; i < MIDA_TAULA_R; i++)
+
             taula[i] = new Arbre(index);
     }
 
@@ -35,51 +37,84 @@ public class TaulaHashI extends TableDataStructure {
     protected boolean add(TableRow tableRow) {
         Object obj = tableRow.getContent().get(index);
         int casella;
+
         //Here hash is calculated
         if (obj instanceof String) {
+
             casella = hashString((String) obj);
+
         } else {
+
             casella = hashInt((int) obj);
+
         }
         if (taula[casella].add(tableRow)) {
+
             size++;
             return true;
+
         } else {
+
             return false;
         }
     }
 
     @Override
     protected ArrayList<String> select(TableRowRestriction restrictions) {
+        ArrayList<String> seleccio = new ArrayList<>();
+
         for (int i = 0; i < MIDA_TAULA_R; i++) {
-            taula[i].select(restrictions);
+
+            seleccio.addAll(taula[i].select(restrictions));
+
         }
-        return null;
+        return seleccio;
     }
 
     @Override
     protected String selectUnique(TableRowRestriction restriction, String column) {
+        String seleccio = null;
+
         for (int i = 0; i < MIDA_TAULA_R; i++) {
-            taula[i].selectUnique(restriction, column);
+
+            seleccio = taula[i].selectUnique(restriction, column);
+
+            if (seleccio != null) {
+
+                return seleccio;
+            }
         }
-        return column;
+        return seleccio;
     }
 
     @Override
     protected ArrayList<HashMap> selectAllInformation(TableRowRestriction restriction) {
-        return null;
+        ArrayList<HashMap> seleccio = new ArrayList<>();
+
+        for (int i = 0; i < MIDA_TAULA_R; i++) {
+
+            seleccio.addAll(taula[i].selectAllInformation(restriction));
+
+        }
+        return seleccio;
     }
 
     @Override
     protected boolean update(String field, TableRow row) {
         Object obj = row.getContent().get(field);
         int casella;
+
         //Here hash is calculated
         if (obj instanceof String) {
+
             casella = hashString((String) obj);
+
         } else {
+
             casella = hashInt((int) obj);
+
         }
+
         return taula[casella].update(field, row);
     }
 
@@ -89,16 +124,24 @@ public class TaulaHashI extends TableDataStructure {
         tb.addColumn(field, value);
         Object obj = tb.getContent().get(field);
         int casella;
+
         //Here hash is calculated
         if (obj instanceof String) {
+
             casella = hashString((String) obj);
+
         } else {
+
             casella = hashInt((int) obj);
+
         }
         if (taula[casella].remove(field, value)) {
+
             size--;
             return true;
+
         } else {
+
             return false;
         }
     }
@@ -111,10 +154,15 @@ public class TaulaHashI extends TableDataStructure {
     private int hashString(String clau) {
         int mida = clau.length();
         int suma = 0;
+
         clau = clau.toLowerCase();
+
         for (int i = 0; i < mida; i++) {
+
             suma+= (clau.charAt(i) - 'a');
+
         }
+
         return suma % MIDA_TAULA_R;
     }
 
