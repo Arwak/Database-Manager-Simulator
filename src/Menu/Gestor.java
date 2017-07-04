@@ -138,6 +138,8 @@ public class Gestor {
             System.out.print(" 2. ");
             System.out.println(Arbre.getName());
             System.out.print(" 3. ");
+            System.out.println(TaulaHashI.getName());
+            System.out.print(" 4. ");
             System.out.println(TaulaHash.getName());
             try {
                 estructura = sc.nextInt();
@@ -147,7 +149,7 @@ public class Gestor {
                 System.out.println("");
 
             }
-        } while (estructura < 1 || 3 < estructura);
+        } while (estructura < 1 || 4 < estructura);
 
         do {
             System.out.print("\nEnter a name for the table: ");
@@ -176,6 +178,10 @@ public class Gestor {
                 break;
             case 3:
                 table = new Table(taula, new TaulaHashI(columna));
+                addColumnToTable(table, columna, dataType);
+                break;
+            case 4:
+                table = new Table(taula, new TaulaHash(columna));
                 addColumnToTable(table, columna, dataType);
                 break;
         }

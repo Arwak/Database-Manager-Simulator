@@ -75,7 +75,8 @@ public class TaulaHashI extends TableDataStructure {
 
     @Override
     protected boolean remove(String field, Object value) {
-        TableRow tb = (TableRow) value;
+        TableRow tb = new TableRow();
+        tb.addColumn(field, value);
         Object obj = tb.getContent().get(field);
         int casella;
         //Here hash is calculated
@@ -112,6 +113,6 @@ public class TaulaHashI extends TableDataStructure {
     }
 
     public static String getName() {
-        return "Taula de Hash";
+        return "Taula de Hash Improved";
     }
 }

@@ -40,6 +40,9 @@ public class TaulaHash extends TableDataStructure {
         taula = new Node[MIDA_TAULA_R];
         size = 0;
         super.setIndex(index);
+        for (int i = 0; i < MIDA_TAULA_R; i++){
+            taula[i] = new Node();
+        }
     }
 
     @Override
@@ -59,6 +62,11 @@ public class TaulaHash extends TableDataStructure {
         }
         aux = escombra;
 
+        //Hash table does not have any value for this key
+        if (escombra.valor == null) {
+            escombra.valor = tableRow;
+            return true;
+        }
         //Looking for the key (tableRow)
         while (escombra != null) {
             if (escombra.valor.compareTo(index, tableRow) == 0) {
@@ -87,7 +95,7 @@ public class TaulaHash extends TableDataStructure {
         Node escombra;
         for (int i = 0; i < MIDA_TAULA_R; i++) {
             escombra = taula[i];
-            while (escombra != null) {
+            while (escombra != null && escombra.valor != null) {
                 if (restrictions.test(escombra.valor))
                     System.out.println(escombra.valor.toString());
                 escombra = escombra.seg;
@@ -118,6 +126,9 @@ public class TaulaHash extends TableDataStructure {
         } else {
             escombra = taula[hashInt((int) obj)];
         }
+        if (escombra.valor == null) {
+            return false;
+        }
         while (escombra != null) {
             if (escombra.valor.compareTo(field, row) == 0) {
                 //value found, time to update it
@@ -132,7 +143,8 @@ public class TaulaHash extends TableDataStructure {
 
     @Override
     protected boolean remove(String field, Object value) {
-        TableRow tb = (TableRow) value;
+        TableRow tb = new TableRow();
+        tb.addColumn(field, value);
         Object obj = tb.getContent().get(field);
         Node escombra;
         int casella;
