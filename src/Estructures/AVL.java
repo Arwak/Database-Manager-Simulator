@@ -351,16 +351,22 @@ public class AVL extends TableDataStructure {
     }
 
     private String whatToShowUnique (NodeAVL actual, TableRowRestriction restriction, String column) {
+        String what = null;
         if(actual == null) {
-            return null;
+            return what;
         }
         if (restriction.test(actual.getRoot())) {
-            System.out.print(actual.getRoot().getContent().get(column).toString());
-            return actual.getRoot().getContent().get(column).toString();
+            what = actual.getRoot().getContent().get(column).toString();
+            return what;
+
         }
-        whatToShowUnique(actual.getChildLeft(), restriction, column);
-        whatToShowUnique(actual.getChildRight(), restriction, column);
-        return null;
+
+        what = whatToShowUnique(actual.getChildLeft(), restriction, column);
+        if (what == null) {
+            what = whatToShowUnique(actual.getChildRight(), restriction, column);
+        }
+
+        return what;
     }
 
     private Boolean whatToModify (NodeAVL actual, TableRow tableRow, String field) {
@@ -392,11 +398,6 @@ public class AVL extends TableDataStructure {
             TableRow updatedRow = getUpdated(actual, tableRow);
             actual.setRoot(updatedRow);
             historic.add(actual.getRoot());
-
-            for (TableRow aHistoric : historic) {
-                System.out.println(aHistoric.toString());
-            }
-
             return true;
         } else {
             System.out.println("Element not found!");

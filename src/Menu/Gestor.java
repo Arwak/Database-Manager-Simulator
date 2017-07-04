@@ -442,8 +442,6 @@ public class Gestor {
                 if (column.equals(index)) {
                     continue;
                 }
-
-
                 String valor = taulaTractant.selectUnique(restriction, column);
 
                 if (valor == null) {
