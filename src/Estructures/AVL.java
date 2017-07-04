@@ -1,8 +1,9 @@
-package AVL;
+package Estructures;
 
 import DBMSi.TableDataStructure;
 import DBMSi.TableRow;
 import DBMSi.TableRowRestriction;
+import Estructures.NodeAVL;
 
 import java.util.*;
 

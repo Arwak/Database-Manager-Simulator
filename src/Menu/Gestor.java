@@ -429,6 +429,7 @@ public class Gestor {
     private static void gestioCuartaMenu2(){
         String index = taulaTractant.getIndex();
         List<String> listOfColumns = taulaTractant.getColumnNames();
+        Boolean problem = false;
 
         try {
             Object what = DatabaseInput.readColumnValue(taulaTractant.getColumnType(index), index);
