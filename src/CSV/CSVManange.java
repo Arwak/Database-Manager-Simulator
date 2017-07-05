@@ -15,8 +15,8 @@ public class CSVManange {
     private static List<DataType> typeColumns;
     private static String columns;
     private static List<String> columnNames;
-    private static String path = "/Users/ClaudiaPeiro/Desktop/prova.csv";
-    private static final String WHEREARECSV = "/Users/ClaudiaPeiro/Documents/LaSalle/segon/PAED/GitFinal/PAED-Practica2/CSV/";
+    private static String path = "./files";
+    private static final String WHEREARECSV = "./files/";
     private static FileWriter w;
 
     private static final String SPLITBY = ";";
@@ -66,7 +66,7 @@ public class CSVManange {
 
     public static void prepareFileToExport(String name) {
         try {
-            w = new FileWriter(name + ".csv");
+            w = new FileWriter(path + "/" + name + ".csv");
         } catch (IOException e) {
             System.err.println("Ups something went wrong! " + e.getMessage());
         }

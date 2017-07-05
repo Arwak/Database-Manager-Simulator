@@ -112,7 +112,7 @@ public class Arbre extends TableDataStructure {
 
         buscarSelect(arrel, restrictions, seleccio);
 
-        return null;
+        return seleccio;
     }
 
     @Override
@@ -680,14 +680,14 @@ public class Arbre extends TableDataStructure {
                     actual.tbdret = actual.pare.mig.tbesq;
                     actual.mig = actual.pare.mig.esq;
                     actual.dret = actual.pare.mig.mig;
-                    actual.pare.mig = null;
-                    actual.pare.tbesq = null;
-                    balance(actual.pare);
 
                     if (actual.pare.mig.esq != null) {
 
                         actual.pare.mig.esq.pare = actual;
                     }
+                    actual.pare.mig = null;
+                    actual.pare.tbesq = null;
+                    balance(actual.pare);
                 }
 
                 // [End:case3:case 2]
@@ -706,12 +706,13 @@ public class Arbre extends TableDataStructure {
 
                         actual.mig = actual.esq;
                         actual.esq = actual.pare.mig.dret;
-                        actual.pare.mig.dret = null;
+
 
                         if (actual.pare.mig.dret != null) {
 
                             actual.pare.mig.dret.pare = actual;
                         }
+                        actual.pare.mig.dret = null;
 
                     } else {
                         //little nightmare [Start:case3-case1]
