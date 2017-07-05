@@ -26,9 +26,12 @@ public class CSVManange {
         path = WHEREARECSV + pathEntered;
     }
 
-    public static ArrayList<TableRow> readCSV (List<String> columnNoms, List<DataType> type) {
+    public static void prepareCSVClass (List<String> columnNoms, List<DataType> type) {
         columnNames = columnNoms;
         typeColumns = type;
+    }
+
+    public static ArrayList<TableRow> readCSV () {
         ArrayList<TableRow> rows = new ArrayList<>();
 
         BufferedReader br = null;
@@ -69,8 +72,9 @@ public class CSVManange {
         }
     }
 
-    public static void writeLines (ArrayList<HashMap> values, int howManyColumns) {
+    public static void writeLines (ArrayList<HashMap> values) {
         StringBuilder sb = new StringBuilder();
+        int howManyColumns = columnNames.size();
         for (HashMap value : values) {
             for (int a = 0; a < howManyColumns; a++) {
                 String column = columnNames.get(a);

@@ -517,9 +517,10 @@ public class Gestor {
     private static void gestioSisenaMenu2(){
         System.out.println("--- CSV Import for table " + taulaTractant.getName() + " ---");
         String file = DatabaseInput.askForCSVFile();
+        CSVManange.prepareCSVClass(taulaTractant.getColumnNames(), taulaTractant.getColumnTypes());
         CSVManange.setPath(file);
         System.out.println("Loading file data...");
-        ArrayList<TableRow> whatToInsert = CSVManange.readCSV(taulaTractant.getColumnNames(), taulaTractant.getColumnTypes());
+        ArrayList<TableRow> whatToInsert = CSVManange.readCSV();
         for (TableRow aWhatToInsert : whatToInsert) {
             taulaTractant.addRow(aWhatToInsert);
         }
@@ -534,8 +535,9 @@ public class Gestor {
     private static void gestioSetenaMenu2(){
         System.out.println("Genereting CSV file for table " + taulaTractant.getName() + " ...");
         ArrayList<HashMap> values = taulaTractant.selectOnlyColumns(new TableRowRestriction());
+        CSVManange.prepareCSVClass(taulaTractant.getColumnNames(), taulaTractant.getColumnTypes());
         CSVManange.prepareFileToExport(taulaTractant.getName());
-        CSVManange.writeLines(values, taulaTractant.getColumnNames().size());
+        CSVManange.writeLines(values);
         CSVManange.endFileToExport();
         System.out.println(taulaTractant.getName() + ".csv file generated successfully with a total of " + taulaTractant.getRowsNumber() + " rows.");
     }
