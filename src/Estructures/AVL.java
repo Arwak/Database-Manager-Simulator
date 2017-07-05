@@ -392,9 +392,11 @@ public class AVL extends TableDataStructure {
         }
 
         if (!problems) {
-            TableRow updatedRow = getUpdated(actual, tableRow);
-            actual.setRoot(updatedRow);
-            historic.add(actual.getRoot());
+            showHistoric(index, 0);
+            actual.setRoot(tableRow);
+
+            historic.add(getUpdated(actual, tableRow));
+            showHistoric(index, 0);
             return true;
         } else {
             System.out.println("Element not found!");
@@ -508,12 +510,15 @@ public class AVL extends TableDataStructure {
     }
 
     private TableRow getUpdated (NodeAVL actual, TableRow tableRow) {
+        System.out.println("tableRow abans: " + tableRow.toString());
         Set<String> keys = tableRow.getContent().keySet();
         TableRow updatedRow;
         updatedRow = actual.getRoot();
         for (String key : keys) {
             updatedRow.getContent().put(key, tableRow.getContent().get(key));
         }
+        System.out.println("tableRow després: " + tableRow.toString());
+        System.out.println("updatedRow: " + updatedRow.toString());
         return updatedRow;
     }
 
