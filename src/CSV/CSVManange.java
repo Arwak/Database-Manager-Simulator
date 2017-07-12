@@ -9,7 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Created by ClaudiaPeiro on 4/7/17.
+ * Created by XRoma i Clupspv on on 4/7/17.
+ * Classe encarregada de gestionar tot allò relacionat amb els arxius CSV, tant importació
+ * com exportació.
  */
 public class CSVManange {
     private static List<DataType> typeColumns;
@@ -22,15 +24,30 @@ public class CSVManange {
     private static final String SPLITBY = ";";
     private static final char COMMA = ',';
 
+    /**
+     * Mètode que s'utilitza per assignar quin es l'arxiu que es dessitja llegir
+     * @param pathEntered nom del fitxer introduit per l'usuari
+     */
     public static void setPath (String pathEntered) {
         path = WHEREARECSV + pathEntered;
     }
 
+
+    /**
+     * Mètode que prepara les variables de la classe abans de realitzar la importació i l'exportació.
+     * @param columnNoms llista amb els noms de les columnes
+     * @param type llista amb els tipus de les columnes
+     */
     public static void prepareCSVClass (List<String> columnNoms, List<DataType> type) {
         columnNames = columnNoms;
         typeColumns = type;
     }
 
+
+    /**
+     * Mètode que realitza la lectura del CSV. Emmagatzema cada fila com a una tableRow.
+     * @return ArrayList amb totes les files.
+     */
     public static ArrayList<TableRow> readCSV () {
         ArrayList<TableRow> rows = new ArrayList<>();
 
@@ -64,6 +81,11 @@ public class CSVManange {
         return rows;
     }
 
+
+    /**
+     * Mètode que crea el arxiu que s'exportarà.
+     * @param name nom que tindrà l'arxiu.
+     */
     public static void prepareFileToExport(String name) {
         try {
             w = new FileWriter(path + "/" + name + ".csv");
@@ -72,6 +94,11 @@ public class CSVManange {
         }
     }
 
+
+    /**
+     * Mètode que escriu l'arxiu a exportar a partir dels valors dels contingut dels hashmaps.
+     * @param values arrayList amb informació que s'ha d'exportar.
+     */
     public static void writeLines (ArrayList<HashMap> values) {
         StringBuilder sb = new StringBuilder();
         int howManyColumns = columnNames.size();
@@ -93,6 +120,10 @@ public class CSVManange {
         }
     }
 
+
+    /**
+     * Mètode que tanca l'arxiu a exportar i la variable utilitzada per a l'escriptura.
+     */
     public static void endFileToExport () {
         try {
             w.flush();
@@ -102,6 +133,13 @@ public class CSVManange {
         }
 
     }
+
+
+    /**
+     *
+     * @param line
+     * @return
+     */
     private static TableRow creaTableRow (String[] line) {
         int tamany = columnNames.size();
         TableRow row = new TableRow();

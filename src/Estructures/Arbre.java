@@ -70,6 +70,14 @@ public class Arbre extends TableDataStructure {
         super.setIndex(index);
     }
 
+    public Arbre () {
+        size = 0;
+    }
+
+    public void setIndex (String index) {
+        super.setIndex(index);
+    }
+
     @Override
     protected void showHistoric(String field, Object valor) {
 

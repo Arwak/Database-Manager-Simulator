@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 /**
  * Taula d'adreçament tancat directa amb zona d'excedents dinamica
- * Created by xavierromacastells on 4/7/17.
+ * Created by XRoma i Clupspv on on 4/7/17.
  */
 public class TaulaHash extends Taula {
 
@@ -39,12 +39,26 @@ public class TaulaHash extends Taula {
         taula = new Node[MIDA_TAULA_R];
         super.size = 0;
         super.setIndex(index);
+        for (int i = 0; i < MIDA_TAULA_R; i++){
+
+            taula[i] = new Node();
+
+        }
+    }
+
+    public TaulaHash() {
+        taula = new Node[MIDA_TAULA_R];
+        super.size = 0;
 
         for (int i = 0; i < MIDA_TAULA_R; i++){
 
             taula[i] = new Node();
 
         }
+    }
+
+    public void setIndex (String index) {
+        super.setIndex(index);
     }
 
     @Override
@@ -59,7 +73,6 @@ public class TaulaHash extends Taula {
 
         //Here hash is calculated
         if (obj instanceof String) {
-
             escombra = taula[hashString((String) obj)];
 
         } else {

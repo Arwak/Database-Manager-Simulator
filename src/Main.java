@@ -6,7 +6,7 @@ import Menu.Menu;
 import java.util.ArrayList;
 
 /**
- * Created by xavierromacastells on 12/5/17.
+ * Created by XRoma i Clupspv on on 12/5/17.
  */
 public class Main {
     private final static int PRIMERA_OPCIO = 1;
