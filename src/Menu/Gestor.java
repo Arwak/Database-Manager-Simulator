@@ -122,7 +122,7 @@ public class Gestor {
     }
 
     private static void prova() {
-        Table avl = new Table("avl", new AVL());
+        Table avl = new Table("avl", new Arbre23("k"));
         avl.addColumn("k", DataType.INT);
         avl.setIndex("k");
 
@@ -143,7 +143,7 @@ public class Gestor {
                 TableRow row = new TableRow();
                 row.addColumn("k", i);
                 avl.addRow(row);
-                //if (!avl.addRow(row)) System.out.println("error");
+                if (!avl.addRow(row)) System.out.println("errorI");
             }
 
             taulaTractant = avl;
@@ -154,13 +154,14 @@ public class Gestor {
 
             for (int i = 1; i <= ns[n]; i++) {
                 System.out.println("- " + i);
-                if (!avl.removeRow(i)) System.out.println("error");
+
+                if (!avl.removeRow(i)) System.out.println("errorD");
             }
 
             deleteAvl.add(System.nanoTime() - time);
         }
 
-        System.out.println("INSERT AVL");
+        System.out.println("INSERT 23");
         for (int n = 0; n < ns.length; n++) {
             System.out.println(insertAvl.get(n));
 
@@ -169,7 +170,7 @@ public class Gestor {
         System.out.println();
         System.out.println();
 
-        System.out.println("DELETE AVL");
+        System.out.println("DELETE 23");
 
         for (int n = 0; n < ns.length; n++) {
             System.out.println(deleteAvl.get(n));
@@ -196,7 +197,7 @@ public class Gestor {
             System.out.print(" 1. ");
             System.out.println(AVL.getName());
             System.out.print(" 2. ");
-            System.out.println(Arbre.getName());
+            System.out.println(Arbre23.getName());
             System.out.print(" 3. ");
             System.out.println(TaulaHash.getName());
             System.out.print(" 4. ");
@@ -232,7 +233,7 @@ public class Gestor {
                 addColumnToTable(table, columna, dataType);
                 break;
             case 2:
-                table = new Table(taula, new Arbre(columna));
+                table = new Table(taula, new Arbre23(columna));
                 addColumnToTable(table, columna, dataType);
                 break;
             case 3:
@@ -627,7 +628,7 @@ public class Gestor {
                 if (taulesGestor.get(i).getDataStructure() instanceof AVL) {
                     estructura = 1;
                 } else {
-                    if (taulesGestor.get(i).getDataStructure() instanceof Arbre) {
+                    if (taulesGestor.get(i).getDataStructure() instanceof Arbre23) {
                         estructura = 2;
                     } else {
                         if (taulesGestor.get(i).getDataStructure() instanceof TaulaHash) {

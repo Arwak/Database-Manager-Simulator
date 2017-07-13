@@ -10,7 +10,7 @@ import java.util.HashMap;
 /**
  * Created by Xavier Roma on 22/6/17.
  */
-public class Arbre extends TableDataStructure {
+public class Arbre23 extends TableDataStructure {
 
     private Node arrel;
     private long size;
@@ -48,7 +48,6 @@ public class Arbre extends TableDataStructure {
             pare = null;
         }
 
-
         /*
             No haurà elements al mig i a la dreta si no n'hi ha a l'esquerra
          */
@@ -57,21 +56,27 @@ public class Arbre extends TableDataStructure {
             return esq == null;
         }
 
+        private void reset() {
+            esq = null;
+            mig = null;
+            dret = null;
+            tbdret = null;
+            tbesq = null;
+            pare = null;
+        }
+
     }
 
-    public Arbre(String index, Node node) {
+    public Arbre23(String index, Node node) {
         arrel = node;
         size = 0;
         super.setIndex(index);
     }
-    public Arbre(String index) {
+
+    public Arbre23(String index) {
         arrel = new Node();
         size = 0;
         super.setIndex(index);
-    }
-
-    public Arbre () {
-        size = 0;
     }
 
     public void setIndex (String index) {
@@ -111,11 +116,11 @@ public class Arbre extends TableDataStructure {
             return false;
 
         }
-
     }
 
     @Override
     protected ArrayList<String> select(TableRowRestriction restrictions) {
+
         ArrayList<String> seleccio = new ArrayList<>();
 
         buscarSelect(arrel, restrictions, seleccio);
@@ -159,15 +164,14 @@ public class Arbre extends TableDataStructure {
         return false;
     }
 
-
     @Override
     protected boolean remove(String field, Object value) {
+
         TableRow tb = new TableRow();
         tb.addColumn(index, value);
         Node toDelete = buscarNode(tb, arrel);
 
         if (toDelete.tbesq.compareTo(index, tb) != 0 && (toDelete.tbdret == null || toDelete.tbdret.compareTo(index, tb) != 0)) {
-
             return false;
         }
 
@@ -176,8 +180,15 @@ public class Arbre extends TableDataStructure {
             toDelete = swapToDelete(toDelete, tb);
         }
 
-        deleteLeaf(tb, toDelete);
         size--;
+        if (size == 0) {
+
+            arrel.reset();
+
+        } else {
+
+            deleteLeaf(tb, toDelete);
+        }
         return true;
     }
 
@@ -389,7 +400,6 @@ public class Arbre extends TableDataStructure {
                     si 3-node
                         split (el mateix proces)
          */
-        boolean status = false;
         int comparacio;
 
         if (node.tbdret == null) {
@@ -402,16 +412,17 @@ public class Arbre extends TableDataStructure {
 
                 node.tbdret = node.tbesq;
                 node.tbesq = row;
-                status = true;
+                return true;
 
             } else if (comparacio == -1) {
                 //key in the node smaller than new key
 
                 node.tbdret = row;
-                status = true;
+                return true;
 
             } else {
                 //row already exists
+                return false;
             }
 
         } else {
@@ -426,6 +437,7 @@ public class Arbre extends TableDataStructure {
                 Node esq = new Node(row);
                 Node mig = new Node(node.tbdret);
                 split(esq, mig, node.tbesq, node.pare);
+                return true;
 
             } else if (comparacio == -1) {
 
@@ -439,6 +451,7 @@ public class Arbre extends TableDataStructure {
                     Node mig = new Node(node.tbdret);
 
                     split(esq, mig, row, node.pare);
+                    return true;
 
                 } else if (comparacio == -1) {
                     //right key in the node smaller than new key
@@ -448,20 +461,22 @@ public class Arbre extends TableDataStructure {
                     Node mig = new Node(row);
 
                     split(esq, mig, node.tbdret, node.pare);
+                    return true;
 
                 } else {
                     //row already exists
+                    return false;
                 }
 
             } else {
                 // row already exists
+                return false;
             }
 
 
 
         }
 
-        return status;
     }
 
     private void split(Node nou_esq, Node nou_mig, TableRow nou, Node pare) {
@@ -656,10 +671,12 @@ public class Arbre extends TableDataStructure {
 
     private void balance(Node actual) {
 
-        if (actual.pare == null && actual.tbesq == null && actual.esq != null) {
+        if (actual.pare == null && actual.tbesq == null &&  actual.esq != null) {
 
             arrel = actual.esq;
 
+        } else if (actual.pare.tbesq == null && actual.tbesq == null &&  actual.esq != null && actual.pare.mig == null) {
+            arrel = actual.esq;
         } else {
             // [Start:case3:case 2]
 
@@ -683,6 +700,8 @@ public class Arbre extends TableDataStructure {
 
                 } else if (actual.pare.esq == actual) {
                     //actual is the left child
+
+
 
                     actual.tbesq = actual.pare.tbesq;
                     actual.tbdret = actual.pare.mig.tbesq;
@@ -875,6 +894,31 @@ public class Arbre extends TableDataStructure {
         }
     }
 
+    public void preOrder() {
+
+        if (arrel.tbesq != null) {
+
+            preOrderI(arrel);
+        }
+        else System.out.println("The tree is empty");
+    }
+
+    private void preOrderI(Node current) {
+
+        if(current != null) {
+
+            System.out.println(current.tbesq.getContent().get(index).toString());
+            preOrderI(current.esq);
+            preOrderI(current.mig);
+
+            if (current.tbdret != null) {
+
+                System.out.println(current.tbdret.getContent().get(index).toString());
+                    preOrderI(current.dret);
+
+            }
+        }
+    }
 
 
 }

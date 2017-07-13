@@ -1,6 +1,5 @@
 package Estructures;
 
-import DBMSi.TableDataStructure;
 import DBMSi.TableRow;
 import DBMSi.TableRowRestriction;
 
@@ -12,16 +11,16 @@ import java.util.HashMap;
  */
 public class TaulaHashI extends Taula {
 
-    private Arbre taula[];
+    private Arbre23 taula[];
 
     public TaulaHashI(String index) {
-        taula = new Arbre[MIDA_TAULA_R];
+        taula = new Arbre23[MIDA_TAULA_R];
         size = 0;
         super.setIndex(index);
 
         for (int i = 0; i < MIDA_TAULA_R; i++)
 
-            taula[i] = new Arbre(index);
+            taula[i] = new Arbre23(index);
     }
 
     @Override
