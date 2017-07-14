@@ -122,7 +122,7 @@ public class Gestor {
     }
 
     private static void prova() {
-        Table avl = new Table("avl", new Arbre23("k"));
+        Table avl = new Table("avl", new TaulaHashI("k"));
         avl.addColumn("k", DataType.INT);
         avl.setIndex("k");
 
@@ -161,7 +161,7 @@ public class Gestor {
             deleteAvl.add(System.nanoTime() - time);
         }
 
-        System.out.println("INSERT 23");
+        System.out.println("INSERT hash");
         for (int n = 0; n < ns.length; n++) {
             System.out.println(insertAvl.get(n));
 
@@ -170,7 +170,7 @@ public class Gestor {
         System.out.println();
         System.out.println();
 
-        System.out.println("DELETE 23");
+        System.out.println("DELETE hash");
 
         for (int n = 0; n < ns.length; n++) {
             System.out.println(deleteAvl.get(n));
@@ -199,8 +199,6 @@ public class Gestor {
             System.out.print(" 2. ");
             System.out.println(Arbre23.getName());
             System.out.print(" 3. ");
-            System.out.println(TaulaHash.getName());
-            System.out.print(" 4. ");
             System.out.println(TaulaHashI.getName());
             try {
                 estructura = sc.nextInt();
@@ -238,10 +236,6 @@ public class Gestor {
                 break;
             case 3:
                 table = new Table(taula, new TaulaHashI(columna));
-                addColumnToTable(table, columna, dataType);
-                break;
-            case 4:
-                table = new Table(taula, new TaulaHash(columna));
                 addColumnToTable(table, columna, dataType);
                 break;
         }
@@ -631,11 +625,7 @@ public class Gestor {
                     if (taulesGestor.get(i).getDataStructure() instanceof Arbre23) {
                         estructura = 2;
                     } else {
-                        if (taulesGestor.get(i).getDataStructure() instanceof TaulaHash) {
                             estructura = 3;
-                        } else {
-                            estructura = 4;
-                        }
                     }
 
                 }
