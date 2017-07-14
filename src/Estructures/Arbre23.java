@@ -16,6 +16,9 @@ public class Arbre23 extends TableDataStructure {
     private long size;
     private ArrayList<TableRow> historic;
 
+    /**
+        This class is the representation of a Node, these are present in tht 2-3 Tree
+     */
     private class Node {
 
         private Node esq;
@@ -67,18 +70,20 @@ public class Arbre23 extends TableDataStructure {
 
     }
 
-    public Arbre23(String index, Node node) {
-        arrel = node;
-        size = 0;
-        super.setIndex(index);
-    }
-
+    /**
+     * Constructor for the Tree
+     * @param index The field of the PrimaryKey
+     */
     public Arbre23(String index) {
         arrel = new Node();
         size = 0;
         super.setIndex(index);
     }
 
+    /**
+     * Sets the field of the PrimaryKey
+     * @param index The field of the PrimaryKey
+     */
     public void setIndex (String index) {
         super.setIndex(index);
     }
@@ -88,6 +93,12 @@ public class Arbre23 extends TableDataStructure {
 
     }
 
+    /**
+     *
+     * @param tableRow The new Row to be added
+     *
+     * @return True if tableRow inserted, false if already in the tree
+     */
     @Override
     protected boolean add(TableRow tableRow) {
 
@@ -118,6 +129,11 @@ public class Arbre23 extends TableDataStructure {
         }
     }
 
+    /**
+     *
+     * @param restrictions  Restriccions per tal de filtrar files en la visualització.
+     * @return The rows which have satisfied the restrictions
+     */
     @Override
     protected ArrayList<String> select(TableRowRestriction restrictions) {
 
@@ -128,6 +144,12 @@ public class Arbre23 extends TableDataStructure {
         return seleccio;
     }
 
+    /**
+     *
+     * @param restriction Restriccions per tal de filtrar files en la visualització.
+     * @param column Restriccions per tal de filtrar tant sols el valor d'una columna en la visualització.
+     * @return the element desired
+     */
     @Override
     protected String selectUnique(TableRowRestriction restriction, String column) {
         String seleccio = null;
@@ -137,6 +159,11 @@ public class Arbre23 extends TableDataStructure {
         return seleccio;
     }
 
+    /**
+     *
+     * @param restriction
+     * @return Returns all the content of the tree in Order
+     */
     @Override
     protected ArrayList<HashMap> selectAllInformation(TableRowRestriction restriction) {
         ArrayList<HashMap> tot = new ArrayList<>();
@@ -146,6 +173,13 @@ public class Arbre23 extends TableDataStructure {
         return tot;
     }
 
+    /**
+     *
+     * @param field El camp pel qual cercar la fila existent.
+     * @param row   El contingut actualitzat de la fila.
+     *
+     * @return True if up
+     */
     @Override
     protected boolean update(String field, TableRow row) {
         Node node = buscarNode(row, arrel);
