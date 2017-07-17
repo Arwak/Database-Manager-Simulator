@@ -4,7 +4,7 @@ package Menu;
 import java.util.Scanner;
 
 /**
- * Created by xavierromacastells on 12/5/17.
+ * Created by XRoma i Clupspv on 21/6/17.
  */
 public class Menu {
 

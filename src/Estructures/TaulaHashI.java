@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Created by xavierromacastells on 4/7/17.
+ * Created by XRoma i Clupspv on 21/6/17.
  */
 public class TaulaHashI extends Taula {
 

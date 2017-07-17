@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Created by Xavier Roma on 22/6/17.
+ * Created by XRoma i Clupspv on 21/6/17.
  */
 public class Arbre23 extends TableDataStructure {
 
@@ -76,6 +76,7 @@ public class Arbre23 extends TableDataStructure {
      */
     public Arbre23(String index) {
         arrel = new Node();
+        historic = new ArrayList<>();
         size = 0;
         super.setIndex(index);
     }
@@ -91,6 +92,16 @@ public class Arbre23 extends TableDataStructure {
     @Override
     protected void showHistoric(String field, Object valor) {
 
+        for (TableRow aHistoric : historic) {
+
+            if (aHistoric.compareTo(field, valor) == 0) {
+
+                System.out.println(aHistoric.toString());
+
+            }
+        }
+
+        System.out.println("\n\n");
     }
 
     /**
@@ -112,6 +123,7 @@ public class Arbre23 extends TableDataStructure {
 
             arrel.tbesq = tableRow;
             size++;
+            historic.add(tableRow);
             return true;
 
         } else {
@@ -120,6 +132,7 @@ public class Arbre23 extends TableDataStructure {
                 //tableRow inserted
 
                 size++;
+                historic.add(tableRow);
                 return true;
             }
 
@@ -178,7 +191,7 @@ public class Arbre23 extends TableDataStructure {
      * @param field El camp pel qual cercar la fila existent.
      * @param row   El contingut actualitzat de la fila.
      *
-     * @return True if up
+     * @return True if updated, false if not
      */
     @Override
     protected boolean update(String field, TableRow row) {
@@ -187,17 +200,26 @@ public class Arbre23 extends TableDataStructure {
         if (node.tbesq.compareTo(index, row) == 0) {
 
             node.tbesq = row;
+            historic.add(row);
             return true;
 
         } else if (node.tbdret != null && node.tbdret.compareTo(index, row) == 0) {
 
             node.tbdret = row;
+            historic.add(row);
             return true;
         }
 
         return false;
     }
 
+    /**
+     *
+     * @param field El nom del camp o columna.
+     * @param value El valor que ha de tenir el camp.
+     *
+     * @return true if removed, false if not
+     */
     @Override
     protected boolean remove(String field, Object value) {
 
@@ -226,11 +248,22 @@ public class Arbre23 extends TableDataStructure {
         return true;
     }
 
+    /**
+     *
+     * @return number of elements inside the tree
+     */
     @Override
     protected long size() {
         return size;
     }
 
+    /**
+     * Private recursive function capable of searching elements given a restriction
+     *
+     * @param node current node
+     * @param rest restrictions
+     * @param seleccio elements selected
+     */
     private void buscarSelect(Node node, TableRowRestriction rest, ArrayList<String> seleccio) {
 
         if(node != null && node.tbesq != null) {
@@ -256,6 +289,13 @@ public class Arbre23 extends TableDataStructure {
         }
     }
 
+    /**
+     * Private recursive function capable of searching an element given a restriction
+     *
+     * @param node current node
+     * @param rest restrictions
+     * @param troballa element selected
+     */
     private void buscarUnique(Node node, TableRowRestriction rest, String column, String troballa) {
 
         if(node != null) {
@@ -280,10 +320,21 @@ public class Arbre23 extends TableDataStructure {
         }
     }
 
+    /**
+     *
+     * @return the name of the structure
+     */
     public static String getName() {
         return "Arbre 2-3";
     }
 
+    /**
+     * Recursive function able to search a node given its content
+     *
+     * @param row content
+     * @param node current node
+     * @return node where row is saved, or root of the tree if not found
+     */
     private Node buscarNode (TableRow row, Node node) {
         Node aux;
 
@@ -348,6 +399,13 @@ public class Arbre23 extends TableDataStructure {
         return aux;
     }
 
+    /**
+     * Recursive function able to search a leaf given its content
+     *
+     * @param row content
+     * @param node current node
+     * @return leaf where row is saved, or root of the tree if not found
+     */
     private Node search(TableRow row, Node node) {
         /*
        CERCAR un element ‘a’
@@ -416,6 +474,13 @@ public class Arbre23 extends TableDataStructure {
         return aux;
     }
 
+    /**
+     * Recursive function to insert an element
+     *
+     * @param row element to be insterted
+     * @param node node where row should be inserted
+     * @return
+     */
     private boolean insert (TableRow row, Node node){
 
         /*
@@ -513,6 +578,15 @@ public class Arbre23 extends TableDataStructure {
 
     }
 
+    /**
+     * Recursive function which modifies the tree if the desired element to be
+     * inserted has no space
+     *
+     * @param nou_esq new left child
+     * @param nou_mig new mid child
+     * @param nou new element to be inserted (lifted to the new parent)
+     * @param pare actual parent of nou_esq node
+     */
     private void split(Node nou_esq, Node nou_mig, TableRow nou, Node pare) {
 
         if (pare != null) {
@@ -617,6 +691,13 @@ public class Arbre23 extends TableDataStructure {
         }
     }
 
+    /**
+     * Function to swap a specific node content with a leaf
+     *
+     * @param node node to delete tb
+     * @param tb content to be deleted from node
+     * @return leaf node where tb is now (swaped)
+     */
     private Node swapToDelete (Node node, TableRow tb) {
         Node nodeFulla; // node on posarem el valor que volem borrar
         TableRow table; // var per fer el swap
@@ -662,6 +743,12 @@ public class Arbre23 extends TableDataStructure {
         return nodeFulla;
     }
 
+    /**
+     * Function to find the rightest node starting at node
+     *
+     * @param node current node
+     * @return the rightest node
+     */
     private Node bringNode (Node node) {
 
         if (node.esq == null) {
@@ -680,6 +767,12 @@ public class Arbre23 extends TableDataStructure {
 
     }
 
+    /**
+     * Functuon able to deleate a leaf from the tree
+     *
+     * @param tb Content to be deleted
+     * @param actual node where tb is saved
+     */
     private void deleteLeaf (TableRow tb, Node actual) {
 
         if (actual.tbesq.compareTo(index, tb) == 0) {
@@ -703,6 +796,10 @@ public class Arbre23 extends TableDataStructure {
 
     }
 
+    /**
+     * Recursive function able to rebalance the structure
+     * @param actual actual node
+     */
     private void balance(Node actual) {
 
         if (actual.pare == null && actual.tbesq == null &&  actual.esq != null) {
@@ -896,6 +993,12 @@ public class Arbre23 extends TableDataStructure {
         }
     }
 
+    /**
+     * Recursive function to get the content of the tree in order
+     *
+     * @param actual actual node
+     * @param ordre List where in order content is saved
+     */
     private void inOrder(Node actual, ArrayList<HashMap> ordre) {
 
         if (actual != null) {
@@ -927,33 +1030,6 @@ public class Arbre23 extends TableDataStructure {
             }
         }
     }
-
-    public void preOrder() {
-
-        if (arrel.tbesq != null) {
-
-            preOrderI(arrel);
-        }
-        else System.out.println("The tree is empty");
-    }
-
-    private void preOrderI(Node current) {
-
-        if(current != null) {
-
-            System.out.println(current.tbesq.getContent().get(index).toString());
-            preOrderI(current.esq);
-            preOrderI(current.mig);
-
-            if (current.tbdret != null) {
-
-                System.out.println(current.tbdret.getContent().get(index).toString());
-                    preOrderI(current.dret);
-
-            }
-        }
-    }
-
 
 }
 

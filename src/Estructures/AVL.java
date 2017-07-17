@@ -7,7 +7,7 @@ import DBMSi.TableRowRestriction;
 import java.util.*;
 
 /**
- * Created by XRoma i Clupspv on on 21/6/17.
+ * Created by XRoma i Clupspv on 21/6/17.
  *
  * Classe encarregada de gestionar tot allò relatiu amb els arbres AVL.
  *
