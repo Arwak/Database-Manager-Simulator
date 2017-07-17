@@ -240,7 +240,6 @@ public class AVL extends TableDataStructure {
         int balance = left - right;
 
         if (Math.abs(balance) < 2) {
-            actual.setBalance(balance);
             if (actual.getParent() != null) {
                 if (endarrere) {
                     calculBalance(actual.getParent(), true);
@@ -270,7 +269,7 @@ public class AVL extends TableDataStructure {
             left = heightLeft(quinAMirar);
 
             if (right > left) {
-                movimentRR(actual, true);
+                movimentRR(actual);
             } else {
                 //System.out.println("Toca moviment RL de: " + actual.getRoot().toString());
                 movimentRL(actual);
@@ -286,7 +285,7 @@ public class AVL extends TableDataStructure {
                 movimentLR(actual);
 
             } else {
-                movimentLL(actual, true);
+                movimentLL(actual);
             }
 
 
@@ -332,8 +331,8 @@ public class AVL extends TableDataStructure {
      * @param actual node del que s'ha detectat un desbalanceig right-left.
      */
     private void movimentRL (NodeAVL actual) {
-        movimentLL(actual.getChildRight(), false);
-        movimentRR(actual, true);
+        movimentLL(actual.getChildRight());
+        movimentRR(actual);
     }
 
     /**
@@ -343,8 +342,8 @@ public class AVL extends TableDataStructure {
      * @param actual node del que s'ha detectat un desbalanceig left-right.
      */
     private void movimentLR (NodeAVL actual) {
-        movimentRR(actual.getChildLeft(), false);
-        movimentLL(actual, true);
+        movimentRR(actual.getChildLeft());
+        movimentLL(actual);
     }
 
 
@@ -354,9 +353,8 @@ public class AVL extends TableDataStructure {
      * caldrà recolocar-lo tant a ell com a la seva descendència com a fill del nou fill esquerre.
      * Caldrà recalcular alçades i si escau recalcular balancejos.
      * @param actual node del qual s'ha detectat un desbalanceig right-right.
-     * @param balanceig cert si cal recalcular balancejos, fals altrament.
      */
-    private void movimentRR (NodeAVL actual, Boolean balanceig) {
+    private void movimentRR (NodeAVL actual) {
         //System.out.println("Toca moviment RR! De: " + actual.getRoot().toString());
 
         NodeAVL row = new NodeAVL(actual);
@@ -391,12 +389,6 @@ public class AVL extends TableDataStructure {
            reCalculHeigh(actual.getChildRight());
        }
        reCalculHeigh(actual.getChildLeft());
-
-        if (balanceig) {
-            calculBalance(actual.getChildRight(), false);
-            calculBalance(actual.getChildLeft(), false);
-            calculBalance(actual, false);
-        }
    }
 
 
@@ -406,9 +398,8 @@ public class AVL extends TableDataStructure {
      * caldrà recolocar-lo tant a ell com a la seva descendència com a fill del nou fill dret.
      * Caldrà recalcular alçades i si escau recalcular balancejos.
      * @param actual node del qual s'ha detectat un desbalanceig left-left.
-     * @param balanceig cert si cal recalcular balancejos, fals altrament.
      */
-    private void movimentLL (NodeAVL actual, Boolean balanceig) {
+    private void movimentLL (NodeAVL actual) {
         //System.out.println("Toca moviment LL! De: " + actual.getRoot().toString());
 
         NodeAVL row = new NodeAVL(actual);
@@ -445,12 +436,6 @@ public class AVL extends TableDataStructure {
 
         }
         reCalculHeigh(actual.getChildRight());
-
-        if (balanceig) {
-            calculBalance(actual.getChildLeft(), false);
-            calculBalance(actual.getChildRight(), false);
-            calculBalance(actual, false);
-        }
     }
 
 

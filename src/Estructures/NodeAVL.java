@@ -11,13 +11,11 @@ import DBMSi.TableRow;
 public class NodeAVL {
     private TableRow root;
     private NodeAVL childRight, childLeft, parent;
-    private int balance;
     private int height;
 
 
     public NodeAVL(TableRow root) {
         this.root = root;
-        balance = 0;
         height = 0;
         childRight = null;
         childLeft = null;
@@ -26,7 +24,6 @@ public class NodeAVL {
 
     public NodeAVL(NodeAVL node) {
         this.root = node.getRoot();
-        balance = 0;
         height = 0;
         childRight = null;
         childLeft = null;
@@ -82,9 +79,6 @@ public class NodeAVL {
         this.height = height;
     }
 
-    public void setBalance (int balance) {
-        this.balance = balance;
-    }
 
     @Override
     public String toString () {
