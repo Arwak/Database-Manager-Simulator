@@ -364,9 +364,8 @@ public class AVL extends TableDataStructure {
         if (pare == null) {
             actual.setParent(null);
         } else {
-
+            actual.setParent(pare);
         }
-        actual.setParent(pare);
 
         NodeAVL childLeft = null;
 
@@ -410,9 +409,9 @@ public class AVL extends TableDataStructure {
         if (pare == null) {
             actual.setParent(null);
         } else {
-
+            actual.setParent(pare);
         }
-        actual.setParent(pare);
+
 
         NodeAVL childRight = null;
 

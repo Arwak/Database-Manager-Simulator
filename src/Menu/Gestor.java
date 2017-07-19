@@ -122,7 +122,7 @@ public class Gestor {
     }
 
     private static void prova() {
-        Table avl = new Table("avl", new TaulaHashI("k"));
+        Table avl = new Table("avl", new AVL());
         avl.addColumn("k", DataType.INT);
         avl.setIndex("k");
 
@@ -144,7 +144,7 @@ public class Gestor {
                 TableRow row = new TableRow();
                 row.addColumn("k", i);
                 avl.addRow(row);
-                if (!avl.addRow(row)) System.out.println("errorI");
+                //if (!avl.addRow(row)) System.out.println("errorI");
             }
 
             taulaTractant = avl;
@@ -155,8 +155,8 @@ public class Gestor {
 
             for (int i = 1; i <= ns[n]; i++) {
                 System.out.println("- " + i);
-
-                if (!avl.removeRow(i)) System.out.println("errorD");
+                avl.removeRow(i);
+                //if (!avl.removeRow(i)) System.out.println("errorD");
             }
 
             deleteAvl.add(System.nanoTime() - time);
