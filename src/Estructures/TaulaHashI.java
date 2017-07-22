@@ -106,7 +106,7 @@ public class TaulaHashI extends Taula {
 
         } else {
 
-            casella = hashInt((int) obj);
+            casella = otherHashInt((int) obj);
 
         }
 

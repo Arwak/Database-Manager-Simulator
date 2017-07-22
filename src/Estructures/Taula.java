@@ -72,12 +72,15 @@ public abstract class Taula extends TableDataStructure {
     }
 
     protected int otherHashInt (int clau) {
-        int hash = 0;
-        for (int i = 0; i < clau; i++) {
+        clau -= (clau << 6);
+        clau &= (clau >> 17);
+        clau -= (clau << 9);
+        clau &= (clau << 4);
+        clau -= (clau << 3);
+        clau &= (clau << 10);
+        clau &= (clau >> 15);
 
-        }
-
-        return hash;
+        return clau;
     }
 
 }
