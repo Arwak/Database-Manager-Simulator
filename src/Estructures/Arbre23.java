@@ -10,6 +10,7 @@ import java.util.HashMap;
 /**
  * Created by XRoma i Clupspv on 21/6/17.
  */
+
 public class Arbre23 extends TableDataStructure {
 
     private Node arrel;
@@ -89,6 +90,7 @@ public class Arbre23 extends TableDataStructure {
         super.setIndex(index);
     }
 
+
     @Override
     protected void showHistoric(String field, Object valor) {
 
@@ -166,10 +168,8 @@ public class Arbre23 extends TableDataStructure {
     @Override
     protected String selectUnique(TableRowRestriction restriction, String column) {
         String seleccio = null;
+        return buscarUnique(arrel, restriction, column, seleccio);
 
-        buscarUnique(arrel, restriction, column, seleccio);
-
-        return seleccio;
     }
 
     /**
@@ -296,7 +296,7 @@ public class Arbre23 extends TableDataStructure {
      * @param rest restrictions
      * @param troballa element selected
      */
-    private void buscarUnique(Node node, TableRowRestriction rest, String column, String troballa) {
+    private String buscarUnique(Node node, TableRowRestriction rest, String column, String troballa) {
 
         if(node != null) {
 
@@ -318,6 +318,8 @@ public class Arbre23 extends TableDataStructure {
                 buscarUnique(node.dret, rest, column, troballa);
             }
         }
+
+        return troballa;
     }
 
     /**

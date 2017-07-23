@@ -7,7 +7,6 @@ import DBMSi.*;
 
 import java.util.*;
 
-//TODO control lletres en tria de quin arbre
 
 /**
  * Created by XRoma i Clupspv on 12/5/17.
@@ -29,7 +28,7 @@ public class Gestor {
      * un arbre AVL de la base de dades
      * @param Tree
      */
-    public static void setAVLTree(ArrayList<Table> Tree) {
+    public static void setTables(ArrayList<Table> Tree) {
         taulesGestor = Tree;
     }
 
@@ -39,7 +38,6 @@ public class Gestor {
      * @param opcio Paràmetre que indica l'opció que ha de ser executada
      */
     public static void gestionaOpcioAmbNumero(int opcio){
-        prova();
         switch (opcio) {
             case 1:
                 gestioPrimera();
@@ -119,67 +117,6 @@ public class Gestor {
                 System.out.println("Error, opció no disponible");
                 break;
         }
-    }
-
-    private static void prova() {
-        Table avl = new Table("avl", new AVL());
-        avl.addColumn("k", DataType.INT);
-        avl.setIndex("k");
-
-        taulesGestor.add(avl);
-        estructura = 1;
-
-        ArrayList<Long> insertAvl = new ArrayList<>();
-        ArrayList<Long> deleteAvl = new ArrayList<>();
-
-
-        int[] ns = {100, 500, 1000, 5000, 10000, 50000, 100000, 500000, 1000000};
-        //int[] ns = {100};
-
-        for (int n = 0; n < ns.length; n++) {
-            System.out.println("::: " + n);
-            long time = System.nanoTime();
-            for (int i = 1; i <= ns[n]; i++) {
-                System.out.println("+ " + i);
-                TableRow row = new TableRow();
-                row.addColumn("k", i);
-                avl.addRow(row);
-                //if (!avl.addRow(row)) System.out.println("errorI");
-            }
-
-            taulaTractant = avl;
-            whereIsTheTable = 0;
-
-            insertAvl.add(System.nanoTime() - time);
-            time = System.nanoTime();
-
-            for (int i = 1; i <= ns[n]; i++) {
-                System.out.println("- " + i);
-                avl.removeRow(i);
-                //if (!avl.removeRow(i)) System.out.println("errorD");
-            }
-
-            deleteAvl.add(System.nanoTime() - time);
-        }
-
-        System.out.println("INSERT hash");
-        for (int n = 0; n < ns.length; n++) {
-            System.out.println(insertAvl.get(n));
-
-        }
-
-        System.out.println();
-        System.out.println();
-
-        System.out.println("DELETE hash");
-
-        for (int n = 0; n < ns.length; n++) {
-            System.out.println(deleteAvl.get(n));
-        }
-
-        System.out.println();
-        System.out.println();
-
     }
 
     /**

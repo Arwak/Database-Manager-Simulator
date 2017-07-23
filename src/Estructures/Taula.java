@@ -13,6 +13,7 @@ import java.util.HashMap;
 public abstract class Taula extends TableDataStructure {
 
     protected final static int MIDA_TAULA_R = 1000000;
+    protected final static int NUMERO_PRIMO = 99991;
 
     protected long size;
 
@@ -54,21 +55,21 @@ public abstract class Taula extends TableDataStructure {
 
         }
 
-        return suma % MIDA_TAULA_R;
+        return Math.abs(suma % MIDA_TAULA_R);
     }
 
 
     protected int hashInt(int clau) {
-        return clau % MIDA_TAULA_R;
+        return Math.abs((clau % NUMERO_PRIMO )% MIDA_TAULA_R);
     }
 
-    protected long DJBHash (String clau) {
-        long hash = 5381;
+    protected int DJBHash (String clau) {
+        int hash = 5381;
         int size = clau.length();
         for (int i = 0; i < size; i++) {
-            hash = ((hash << 5) + hash) + clau.charAt(i);
+            hash += ((hash << 5) + hash) + clau.charAt(i);
         }
-        return hash;
+        return Math.abs(hash % MIDA_TAULA_R);
     }
 
     protected int otherHashInt (int clau) {
@@ -80,7 +81,7 @@ public abstract class Taula extends TableDataStructure {
         clau &= (clau << 10);
         clau &= (clau >> 15);
 
-        return clau;
+        return Math.abs(clau % MIDA_TAULA_R);
     }
 
 }

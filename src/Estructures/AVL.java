@@ -566,9 +566,8 @@ public class AVL extends TableDataStructure {
         }
 
         if (!problems) {
-            showHistoric(index, 0);
+            historic.add(tableRow);
             actual.setRoot(tableRow);
-            historic.add(getUpdated(actual, tableRow));
             return true;
         } else {
             System.err.println("Element not found!");
@@ -709,22 +708,6 @@ public class AVL extends TableDataStructure {
         return what;
     }
 
-
-    /**
-     * Es traspassarà la informació d'un node i un tableRow. Sút
-     * @param actual node on se li
-     * @param tableRow tableRow d'on s'obtindrà la informació per combinarla amb la del node
-     * @return tableRow amb informació
-     */
-    private TableRow getUpdated (NodeAVL actual, TableRow tableRow) {
-        Set<String> keys = tableRow.getContent().keySet();
-        TableRow updatedRow;
-        updatedRow = actual.getRoot();
-        for (String key : keys) {
-            updatedRow.getContent().put(key, tableRow.getContent().get(key));
-        }
-        return updatedRow;
-    }
 
     /**
      * @return nom que permet distingir l'arbre.

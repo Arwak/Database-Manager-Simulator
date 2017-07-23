@@ -40,6 +40,7 @@ public abstract class TableDataStructure {
         this.index = field;
     }
 
+
     protected abstract void showHistoric(String field, Object valor);
 
     /**

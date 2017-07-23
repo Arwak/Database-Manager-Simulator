@@ -11,11 +11,11 @@ import java.util.ArrayList;
 public class Main {
     private final static int PRIMERA_OPCIO = 1;
     private final static int NUMERO_OPCIONS = 5;
-    private static ArrayList<Table> AVLTree;
+    private static ArrayList<Table> tables;
 
     public static void main(String[] args) throws Exception {
-        AVLTree = new ArrayList<Table>();
-        Gestor.setAVLTree(AVLTree);
+        tables = new ArrayList<Table>();
+        Gestor.setTables(tables);
         gestioMenu();
 
     }

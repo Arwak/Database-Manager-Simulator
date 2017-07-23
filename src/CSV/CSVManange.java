@@ -33,6 +33,7 @@ public class CSVManange {
     }
 
 
+
     /**
      * Mètode que prepara les variables de la classe abans de realitzar la importació i l'exportació.
      * @param columnNoms llista amb els noms de les columnes
@@ -88,7 +89,8 @@ public class CSVManange {
      */
     public static void prepareFileToExport(String name) {
         try {
-            w = new FileWriter(path + "/" + name + ".csv");
+            path = WHEREARECSV;
+            w = new FileWriter(path  + name + ".csv");
         } catch (IOException e) {
             System.err.println("Ups something went wrong! " + e.getMessage());
         }

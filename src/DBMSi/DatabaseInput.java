@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
- * Created by Albertpv on 31/03/17.
+ * Created by Albertpv on 31/03/17 and expanded by XRoma and Clupspv.
  *
  * Classe encarregada de la lectura de dades per teclat necessàries per tal de realitzar
  * certes opcions de les taules i creació de restriccions.
