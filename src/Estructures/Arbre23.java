@@ -303,6 +303,7 @@ public class Arbre23 extends TableDataStructure {
             if (rest.test(node.tbesq)) {
 
                 troballa = node.tbesq.getContent().get(column).toString();
+                return troballa;
             }
 
             buscarUnique(node.esq, rest, column, troballa);
@@ -313,6 +314,7 @@ public class Arbre23 extends TableDataStructure {
                 if (rest.test(node.tbdret)) {
 
                     troballa = node.tbdret.getContent().get(column).toString();
+                    return troballa;
                 }
 
                 buscarUnique(node.dret, rest, column, troballa);
